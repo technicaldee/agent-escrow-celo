@@ -1,0 +1,12 @@
+node_modules/
+artifacts/
+cache/
+typechain-types/
+dist/
+.env
+.env.*
+!.env.example
+ignition/deployments/chain-31337/
+coverage/
+.DS_Store
+.agent-state.json

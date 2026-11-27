@@ -1,0 +1,24 @@
+{
+  "name": "agent-escrow-celo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Escrow agent on Celo: clients pay USDT, an agent verifies delivery, freelancers get paid in cNGN via Textile FX",
+  "type": "commonjs",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox-viem": "^3.0.0",
+    "@nomicfoundation/hardhat-viem": "^2.1.5",
+    "@types/node": "^26.6.11",
+    "hardhat": "^2.30.0",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@celo/attribution-tags": "^0.7.0",
+    "@hono/node-server": "^2.1.11",
+    "@openzeppelin/contracts": "^5.6.1",
+    "dotenv": "^18.0.10",
+    "hono": "^4.13.23",
+    "viem": "^2.58.8"
+  }
+}
