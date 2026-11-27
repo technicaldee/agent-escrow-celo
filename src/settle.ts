@@ -13,10 +13,14 @@ export async function settleToNaira(jobId: bigint, freelancer: Address) {
   const { client, account } = agentWallet();
   const escrow = env.escrow();
 
+  // The amount owed comes from the contract, not from the wallet balance: a lagging RPC node can
+  // report a stale balance of 0 right after the transfer lands.
+  const job = (await publicClient.readContract({ address: escrow, abi: escrowAbi, functionName: "jobs", args: [jobId] })) as readonly unknown[];
+  const net = job[11] as bigint; // pendingNet
+  if (net === 0n) throw new Error(`job ${jobId}: nothing pending to settle`);
+
   const begin = await client.writeContract({ address: escrow, abi: escrowAbi, functionName: "beginSettlement", args: [jobId] });
   await publicClient.waitForTransactionReceipt({ hash: begin });
-
-  const net = (await publicClient.readContract({ address: CELO.usdt, abi: erc20Abi, functionName: "balanceOf", args: [account.address] })) as bigint;
 
   let swapTx: Hex;
   try {
