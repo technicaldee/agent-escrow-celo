@@ -28,7 +28,8 @@
   :root { --y:#FCFF52; --ink:#0b0b0c; --mut:#6b6b73; --line:#ececf0; --green:#00b25a; --red:#e5484d; --soft:#f6f6f2; }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin: 0; }
-  body { font-family: ui-rounded, "SF Pro Rounded", "Segoe UI", system-ui, -apple-system, sans-serif; color: var(--ink); background: linear-gradient(var(--y) 0, var(--y) 320px, #fff 320px); min-height: 100vh; }
+  body { font-family: ui-rounded, "SF Pro Rounded", "Segoe UI", system-ui, -apple-system, sans-serif; color: var(--ink); background: var(--y); min-height: 100vh; }
+  body.home { background: linear-gradient(var(--y) 0, var(--y) 320px, #fff 320px); } body.home .foot { background: #fff; }
   button { font: inherit; color: inherit; border: 0; cursor: pointer; }
   .top { max-width: 460px; margin: 0 auto; padding: 14px 18px; display: flex; align-items: center; gap: 8px; }
   .brand { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 18px; flex: 1; letter-spacing: -.02em; }
@@ -86,12 +87,12 @@
   .txt { color: var(--mut); font-size: 14px; line-height: 1.5; }
   .hide { display: none !important; } details summary { cursor: pointer; font-weight: 700; padding: 8px 0; }
   a { color: inherit; }
-  .foot { background: #fff; text-align: center; font-size: 12px; color: var(--mut); padding: 18px 12px 30px; }
+  .foot { text-align: center; font-size: 12px; color: var(--mut); padding: 18px 12px 30px; }
   .confetti { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 20; } .confetti span { position: absolute; top: -30px; font-size: 26px; animation: fall 2.4s ease-in forwards; }
   @keyframes fall { to { transform: translateY(110vh) rotate(360deg); opacity: .9; } }
 </style>
 </head>
-<body>
+<body class="home">
 <div class="top">
   <div class="brand"><img src="brand/held-icon.svg" alt="" /> held</div>
   <select id="cur" class="chip" aria-label="Currency"></select>
@@ -272,6 +273,7 @@ function go(name, push = true) {
   const cur = document.querySelector(".screen.on")?.id.slice(2);
   if (push && cur && cur !== name) history.push(cur);
   document.querySelectorAll(".screen").forEach((s) => s.classList.toggle("on", s.id === "s-" + name));
+  document.body.classList.toggle("home", name === "home");
   window.scrollTo({ top: 0 });
 }
 document.addEventListener("click", (e) => { if (e.target.closest("[data-back]")) { go(history.pop() || "home", false); } });
@@ -549,7 +551,7 @@ $("jobview").addEventListener("click", (e) => {
 /* ---------- start ---------- */
 const to = new URLSearchParams(location.search).get("to");
 renderCurrency();
-if (to) { $("to").value = "@" + to.replace(/[^a-z0-9_]/gi, ""); resolveWho(); go("send", false); }
+if (to) { document.body.classList.remove("home"); $("to").value = "@" + to.replace(/[^a-z0-9_]/gi, ""); resolveWho(); go("send", false); }
 </script>
 <script>
   // Privacy-friendly analytics (GoatCounter: no cookies, no personal data). Set the site code to enable.
