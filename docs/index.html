@@ -50,6 +50,8 @@
   .empty { text-align: center; color: #71717a; padding: 22px 8px; }
   footer { color: #71717a; font-size: 12px; text-align: center; margin-top: 22px; line-height: 1.6; } footer a { color: #52525b; }
   .hide { display: none !important; }
+  #help details { border-top: 1px solid #ececf0; padding: 10px 0; } #help details:first-of-type { border-top: 0; } #help summary { cursor: pointer; } #help details p { margin: 8px 0 0; }
+  #nowallet a { color: inherit; font-weight: 600; }
 </style>
 </head>
 <body>
@@ -61,12 +63,12 @@
 
 <main>
   <h1>Get paid safely, anywhere.</h1>
-  <p class="sub">Pay a freelancer abroad with no marketplace fees. Your money is held in escrow until you approve the work, then paid out in naira.</p>
+  <p class="sub">Pay someone for their work without marketplace fees. Your money is held safely until the work is done, then they are paid in naira.</p>
 
   <div class="steps">
-    <div class="step"><img src="img/money.png" alt="" /><b>1. Pay</b>into escrow</div>
-    <div class="step"><img src="img/package.png" alt="" /><b>2. Deliver</b>freelancer works</div>
-    <div class="step"><img src="img/check.png" alt="" /><b>3. Approve</b>you confirm</div>
+    <div class="step"><img src="img/money.png" alt="" /><b>1. Pay</b>held safely</div>
+    <div class="step"><img src="img/package.png" alt="" /><b>2. Work</b>gets done</div>
+    <div class="step"><img src="img/check.png" alt="" /><b>3. Approve</b>you say it’s good</div>
     <div class="step"><img src="img/lock.png" alt="" /><b>4. Paid</b>in naira</div>
   </div>
 
@@ -77,50 +79,51 @@
   </div>
 
   <fluent-message-bar id="msg" class="msg" intent="info"><span id="msgtext"></span></fluent-message-bar>
+  <fluent-message-bar id="nowallet" class="msg" intent="warning"><span>To pay or get paid you need a wallet app. Open this page in <b>MiniPay</b>, or install <b>MetaMask</b>. <a href="#help">New to this? Start here.</a></span></fluent-message-bar>
 
   <!-- PAY -->
   <section id="p-pay">
     <div class="card">
-      <h2>Pay a freelancer</h2>
-      <p>Type their handle. We show their name so you can confirm it's them before you pay.</p>
+      <h2>Pay someone</h2>
+      <p>Enter their pay name (like <b>@dee_web</b>). We show their name so you can check it’s them.</p>
       <label class="field"><span>Who are you paying?</span>
-        <fluent-text-input id="freelancer" placeholder="@handle or wallet address" autocapitalize="none" autocomplete="off"></fluent-text-input></label>
+        <fluent-text-input id="freelancer" placeholder="@their_pay_name" autocapitalize="none" autocomplete="off"></fluent-text-input></label>
       <div id="who" class="who"><fluent-avatar id="whoav" size="40"></fluent-avatar><div><div class="t" id="whot"></div><div class="s" id="whos"></div></div></div>
-      <label class="field hide" id="confirmRow"><fluent-checkbox id="confirm">Yes, this is the person I expect to pay</fluent-checkbox></label>
+      <label class="field hide" id="confirmRow"><fluent-checkbox id="confirm">Yes, this is the right person</fluent-checkbox></label>
 
       <label class="field"><span id="amountlabel">Amount</span>
         <fluent-text-input id="amount" inputmode="decimal"></fluent-text-input></label>
       <div class="chips" id="chips"></div>
       <div class="est" id="est">Enter an amount to see the naira value.</div>
 
-      <label class="field"><span>What is being delivered?</span>
-        <fluent-textarea id="brief" rows="3" placeholder="e.g. Update the pricing page and fix the mobile menu"></fluent-textarea></label>
-      <div class="sw"><fluent-switch id="naira" checked></fluent-switch><span id="nairalabel">Pay the freelancer in naira (cNGN)</span></div>
-      <details><summary>Advanced</summary>
-        <div class="row"><label class="field"><span>Deliver within (days)</span><fluent-text-input id="days" value="7" inputmode="numeric"></fluent-text-input></label>
-        <label class="field"><span>Your review time (hours)</span><fluent-text-input id="review" value="72" inputmode="numeric"></fluent-text-input></label></div>
+      <label class="field"><span>What is this payment for?</span>
+        <fluent-textarea id="brief" rows="3" placeholder="e.g. Update my website’s pricing page"></fluent-textarea></label>
+      <div class="sw"><fluent-switch id="naira" checked></fluent-switch><span id="nairalabel">Pay them in naira</span></div>
+      <details><summary>More options</summary>
+        <div class="row"><label class="field"><span>Work is due in (days)</span><fluent-text-input id="days" value="7" inputmode="numeric"></fluent-text-input></label>
+        <label class="field"><span>Time for you to check it (hours)</span><fluent-text-input id="review" value="72" inputmode="numeric"></fluent-text-input></label></div>
       </details>
-      <div class="actions"><fluent-button id="fund" appearance="primary" class="main">Pay into escrow</fluent-button></div>
+      <div class="actions"><fluent-button id="fund" appearance="primary" class="main">Pay and hold safely</fluent-button></div>
     </div>
   </section>
 
   <!-- EARN -->
   <section id="p-earn" class="hide">
     <div class="card">
-      <h2>Your handle</h2>
-      <p>Claim a short handle once. Clients type it instead of your wallet address, and see your name to confirm it's you.</p>
+      <h2>Your pay name</h2>
+      <p>Choose a short name once, like <b>dee_web</b>. Clients type it to pay you, and see your real name so they know it’s you.</p>
       <div id="me"></div>
       <div id="claim">
         <div class="row">
-          <label class="field"><span>Handle</span><fluent-text-input id="handle" placeholder="dee_web" autocapitalize="none"></fluent-text-input></label>
+          <label class="field"><span>Pay name</span><fluent-text-input id="handle" placeholder="dee_web" autocapitalize="none"></fluent-text-input></label>
           <label class="field"><span>Your name</span><fluent-text-input id="myname" placeholder="Edidiong Udoh"></fluent-text-input></label>
         </div>
-        <div class="actions"><fluent-button id="reg" appearance="primary" class="main">Claim my handle</fluent-button></div>
+        <div class="actions"><fluent-button id="reg" appearance="primary" class="main">Claim my pay name</fluent-button></div>
       </div>
     </div>
     <div class="card">
       <h2>How you get paid</h2>
-      <p style="margin:0">1. Send your client your pay link. 2. They pay into escrow, you see the job under <b>My jobs</b>. 3. Do the work and mark it delivered. 4. When they approve, the naira lands in your wallet.</p>
+      <p style="margin:0">1. Send your client your pay link. 2. They pay, and you see the job under <b>My jobs</b>. 3. Do the work and mark it done. 4. When they approve, the naira arrives in your wallet.</p>
     </div>
   </section>
 
@@ -129,6 +132,22 @@
     <div class="card">
       <div class="top" style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h2 style="margin:0">My jobs</h2><fluent-button id="refresh" size="small">Refresh</fluent-button></div>
       <div id="jobs"><div class="empty">Connect your wallet to see your jobs.</div></div>
+    </div>
+  </section>
+
+  <section id="help">
+    <div class="card">
+      <h2>New here? Start in 3 steps</h2>
+      <details open><summary><b>1. Get a wallet app</b></summary><p>MiniPay (inside the Opera Mini browser) is the easiest. It is free and works on a phone. MetaMask also works.</p></details>
+      <details><summary><b>2. Get dollars (USD₮) on Celo</b></summary><p>Inside MiniPay use <b>Add cash</b>. Or buy USDT on an exchange and withdraw it on the <b>Celo network</b> to your wallet address. Always send a small test amount first.</p></details>
+      <details><summary><b>3. Pay</b></summary><p>Enter the pay name your freelancer gave you, the amount, and what it is for. Your money is held safely. Nothing is paid until you approve.</p></details>
+    </div>
+    <div class="card">
+      <h2>Questions</h2>
+      <details><summary><b>Is my money safe?</b></summary><p>It is held by a public smart contract on Celo, not by us. Anyone can check it. If you do nothing, it can only go to the freelancer after the time you set, and you can open a dispute before then.</p></details>
+      <details><summary><b>What if the work is not delivered?</b></summary><p>You can ask for a refund once the due date and a short grace period have passed.</p></details>
+      <details><summary><b>What does it cost?</b></summary><p>1% when the freelancer is paid. Marketplaces typically charge 10–20%.</p></details>
+      <details><summary><b>Why naira?</b></summary><p>Freelancers in Nigeria can be paid straight in naira at the live exchange rate, or take dollars if they prefer.</p></details>
     </div>
   </section>
 
@@ -275,13 +294,13 @@ async function resolveWho() {
       const p = await pub.readContract({ address: REGISTRY, abi: regAbi, functionName: "profiles", args: [getAddress(raw)] });
       resolved = { address: getAddress(raw), name: p[1], handle: p[0] };
       if (p[1]) { set("", p[1], `@${p[0]} · ${short(raw)}`, p[1]); $("confirmRow").classList.remove("hide"); }
-      else set("warn", "No profile for this wallet", "Double-check the address with the freelancer before paying.", "?");
+      else set("warn", "No name registered for this wallet", "Double-check the address with the freelancer before paying.", "?");
     } else if (/^[a-z0-9_]{3,24}$/i.test(raw)) {
       const [owner, name] = await pub.readContract({ address: REGISTRY, abi: regAbi, functionName: "resolve", args: [raw.toLowerCase()] });
-      if (/^0x0+$/.test(owner)) { set("bad", "No such handle", "Check the spelling with the freelancer.", "?"); return; }
+      if (/^0x0+$/.test(owner)) { set("bad", "No one has that pay name", "Check the spelling with the freelancer.", "?"); return; }
       resolved = { address: owner, name, handle: raw.toLowerCase() };
       set("", name, `@${raw.toLowerCase()} · ${short(owner)}`, name); $("confirmRow").classList.remove("hide");
-    } else set("bad", "That doesn't look right", "Use a handle like @dee_web or a wallet address starting with 0x.", "?");
+    } else set("bad", "That doesn't look right", "Use a pay name like @dee_web.", "?");
   } catch { set("bad", "Could not look that up", "Check your connection and try again.", "?"); }
 }
 let rt; $("freelancer").addEventListener("input", () => { clearTimeout(rt); rt = setTimeout(resolveWho, 350); });
@@ -308,8 +327,8 @@ $("chips").addEventListener("click", (e) => { const v = e.target.closest("fluent
 /* ---------- fund ---------- */
 $("fund").onclick = () => guard("Preparing payment", async () => {
   await resolveWho();
-  if (!val("freelancer")) fail("Enter who you are paying: a handle like @dee_web or a wallet address.");
-  if (!resolved) fail("We couldn't find that freelancer. Check the handle or address.");
+  if (!val("freelancer")) fail("Enter who you are paying, like @dee_web.");
+  if (!resolved) fail("We couldn't find that person. Check the pay name.");
   if (resolved.name && !$("confirm").checked) fail(`Tick the box to confirm you are paying ${resolved.name}.`);
   if (resolved.address.toLowerCase() === account.toLowerCase()) fail("You can't pay yourself.");
   const amount = amountUnits();
@@ -327,15 +346,15 @@ $("fund").onclick = () => guard("Preparing payment", async () => {
   const deliverBy = Math.floor(Date.now() / 1000) + days * 86400;
   const allowance = await pub.readContract({ address: USDT, abi: erc20, functionName: "allowance", args: [account, ESCROW] });
   if (allowance < amount) {
-    say("Step 1 of 2: allow the escrow to hold your USD₮. Confirm in your wallet…");
+    say("Step 1 of 2: allow the app to hold your dollars safely. Confirm in your wallet…");
     const h = await wallet.writeContract({ address: USDT, abi: erc20, functionName: "approve", args: [ESCROW, amount] });
     await pub.waitForTransactionReceipt({ hash: h });
   }
-  say("Step 2 of 2: paying into escrow. Confirm in your wallet…");
+  say("Step 2 of 2: sending your payment. Confirm in your wallet…");
   const { receipt } = await send(ESCROW, escrowAbi, "fund", [resolved.address, amount, deliverBy, hours * 3600, $("naira").checked, keccak256(toHex(brief))]);
   const [ev] = parseEventLogs({ abi: escrowAbi, eventName: "JobFunded", logs: receipt.logs });
   localStorage.setItem(`brief:${ev.args.id}`, brief);
-  say(`Done. ${money(amount)} is held in escrow for ${resolved.name || short(resolved.address)}. They'll see it under "My jobs".`, "success");
+  say(`Done. ${money(amount)} is held safely for ${resolved.name || short(resolved.address)}. They'll see it under "My jobs".`, "success");
   refreshBalance(); tab("jobs");
 }, $("fund"));
 
@@ -354,12 +373,12 @@ async function showMe() {
     $("wa").onclick = () => window.open(`https://wa.me/?text=${text}`, "_blank");
   } else { $("me").innerHTML = ""; $("claim").classList.remove("hide"); }
 }
-$("reg").onclick = () => guard("Claiming your handle", async () => {
+$("reg").onclick = () => guard("Claiming your pay name", async () => {
   const handle = val("handle").replace(/^@/, "").toLowerCase(), name = val("myname").replace(/\s+/g, " ");
-  if (!/^[a-z0-9_]{3,24}$/.test(handle)) fail("A handle is 3 to 24 characters: lowercase letters, numbers and underscore only (like dee_web).");
+  if (!/^[a-z0-9_]{3,24}$/.test(handle)) fail("A pay name is 3 to 24 characters: lowercase letters, numbers and underscore only (like dee_web).");
   if (name.length < 2 || name.length > 60) fail("Enter your name (2 to 60 characters) so clients can confirm it's you.");
   const [owner] = await pub.readContract({ address: REGISTRY, abi: regAbi, functionName: "resolve", args: [handle] });
-  if (!/^0x0+$/.test(owner)) fail("That handle is already taken. Try another.");
+  if (!/^0x0+$/.test(owner)) fail("That pay name is already taken. Try another.");
   await send(REGISTRY, regAbi, "register", [handle, name]);
   await showMe(); say(`@${handle} is yours. Send your link to your client.`, "success");
 }, $("reg"));
@@ -403,7 +422,7 @@ async function loadJobs() {
           btns = `<fluent-button appearance="primary" data-act="approve" data-id="${id}">Approve and pay</fluent-button><input id="dr-${id}" placeholder="Reason, if disputing" /><fluent-button data-act="dispute" data-id="${id}">Dispute</fluent-button>`; }
         else { hint = `Delivered. ${esc(other)} is reviewing until ${new Date(ends * 1000).toLocaleString()}.`;
           if (now >= ends) btns = `<fluent-button appearance="primary" data-act="release" data-id="${id}">Release payment</fluent-button>`; }
-      } else if (status === 3) hint = "The escrow agent is reviewing both sides and will decide.";
+      } else if (status === 3) hint = "Our agent is reviewing both sides and will decide.";
       else if (status === 4 || status === 5) {
         hint = "Converting to naira on Textile FX. This takes a minute or two.";
         if (!isClient && status === 4 && now > Number(releasingAt) + 3600) btns = `<fluent-button data-act="claim" data-id="${id}">Take USD₮ instead</fluent-button>`;
@@ -435,6 +454,7 @@ $("jobs").addEventListener("click", (e) => {
 const to = new URLSearchParams(location.search).get("to");
 if (to) { $("freelancer").value = "@" + to.replace(/[^a-z0-9_]/gi, ""); resolveWho(); }
 $("nairalabel").onclick = () => { $("naira").checked = !$("naira").checked; estimate(); };
+if (!window.ethereum) $("nowallet").classList.add("show");
 renderCurrency();
 setTimeout(renderCurrency, 700);
 </script>
