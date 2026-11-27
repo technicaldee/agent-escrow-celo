@@ -9,7 +9,7 @@
     },
     {
       "name": "escrow",
-      "endpoint": "eip155:42220:0x663b081f621eaf058ff3b7d8298f43c3b80d15ae"
+      "endpoint": "eip155:42220:0xaeeb6938ad76a8a674d6000487e01655cc9fc5a6"
     }
   ],
   "x402Support": false,

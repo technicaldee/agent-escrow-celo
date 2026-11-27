@@ -10,3 +10,4 @@ ignition/deployments/chain-31337/
 coverage/
 .DS_Store
 .agent-state.json
+agent.log
