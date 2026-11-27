@@ -37,9 +37,22 @@
   </div>
 
   <div class="card">
+    <h2>Your profile (freelancers)</h2>
+    <p class="mut" style="margin:0 0 6px">Claim a short handle clients can type instead of your wallet address. The name is shown to the client so they can confirm it is you.</p>
+    <div id="me" class="mut"></div>
+    <div class="row">
+      <div><label>Handle (a-z, 0-9, _)</label><input id="handle" placeholder="dee_web" autocapitalize="none" /></div>
+      <div><label>Your name</label><input id="myname" placeholder="Edidiong Udoh" /></div>
+    </div>
+    <button id="reg">Claim handle</button>
+  </div>
+
+  <div class="card">
     <h2>1. Fund a job (client)</h2>
-    <label>Freelancer wallet (0x…)</label>
-    <input id="freelancer" placeholder="0x…" />
+    <label>Freelancer handle or wallet</label>
+    <input id="freelancer" placeholder="@dee_web or 0x…" autocapitalize="none" />
+    <div id="who" class="mut" style="margin-top:6px"></div>
+    <div class="chk" id="confirmRow" style="display:none"><input type="checkbox" id="confirm" /><span>I confirm this is the person I expect to pay</span></div>
     <div class="row">
       <div><label>Amount (USD₮)</label><input id="amount" inputmode="decimal" value="2" /></div>
       <div><label>Deliver within (days)</label><input id="days" inputmode="numeric" value="7" /></div>
@@ -82,6 +95,7 @@ import { withAttribution } from "https://esm.sh/@celo/attribution-tags@0.7.0?dep
 
 const ESCROW = "0xaeeb6938ad76a8a674d6000487e01655cc9fc5a6";
 const USDT = "0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e";
+const REGISTRY = "0x3474f9f70202ba84d731289afa2c7c05f87d7f45";
 const TAG = "celo_0546234e302b";
 const STATUS = ["None","Funded (waiting for delivery)","Delivered (in review)","Disputed (agent deciding)","Paying in naira…","Converting to naira…","Paid in naira","Paid in USD₮","Refunded"];
 
@@ -94,6 +108,12 @@ const abi = parseAbi([
   "function claimUsdt(uint256 id)",
   "function jobs(uint256) view returns (address client,address freelancer,uint128 amount,uint40 deliverBy,uint40 reviewWindow,uint40 deliveredAt,uint40 disputedAt,uint40 releasingAt,uint8 status,bool payNaira,bytes32 briefHash,uint128 pendingNet)",
   "event JobFunded(uint256 indexed id,address indexed client,address indexed freelancer,uint256 amount,uint40 deliverBy,uint40 reviewWindow,bool payNaira,bytes32 briefHash)",
+]);
+const regAbi = parseAbi([
+  "function register(string handle,string name)",
+  "function setName(string name)",
+  "function resolve(string handle) view returns (address owner,string name,uint40 since)",
+  "function profiles(address) view returns (string handle,string name,uint40 since)",
 ]);
 const erc20 = parseAbi([
   "function balanceOf(address) view returns (uint256)",
@@ -115,6 +135,7 @@ async function connect() {
   const bal = await pub.readContract({ address: USDT, abi: erc20, functionName: "balanceOf", args: [account] });
   $("wallet").textContent = `${account.slice(0,6)}…${account.slice(-4)} · ${formatUnits(bal, 6)} USD₮`;
   $("connect").textContent = "Connected";
+  await showMe();
   log("Wallet connected.", "ok");
 }
 
@@ -130,11 +151,51 @@ const send = async (functionName, args) => {
   return { hash, receipt };
 };
 
+let resolved = null;
+async function resolveWho() {
+  const raw = $("freelancer").value.trim().replace(/^@/, "");
+  resolved = null; $("who").textContent = ""; $("confirmRow").style.display = "none"; $("confirm").checked = false;
+  if (!raw) return;
+  try {
+    if (isAddress(raw)) {
+      const p = await pub.readContract({ address: REGISTRY, abi: regAbi, functionName: "profiles", args: [getAddress(raw)] });
+      resolved = { address: getAddress(raw), name: p[1], handle: p[0] };
+      $("who").className = p[1] ? "ok" : "bad";
+      $("who").textContent = p[1] ? `${p[1]} (@${p[0]}) · ${raw.slice(0,6)}…${raw.slice(-4)}` : "No profile for this wallet. Double-check the address with the freelancer.";
+    } else {
+      const [owner, name] = await pub.readContract({ address: REGISTRY, abi: regAbi, functionName: "resolve", args: [raw.toLowerCase()] });
+      if (/^0x0+$/.test(owner)) { $("who").className = "bad"; $("who").textContent = "No such handle."; return; }
+      resolved = { address: owner, name, handle: raw.toLowerCase() };
+      $("who").className = "ok"; $("who").textContent = `${name} (@${raw.toLowerCase()}) · ${owner.slice(0,6)}…${owner.slice(-4)}`;
+    }
+    if (resolved.name) $("confirmRow").style.display = "flex";
+  } catch (e) { $("who").className = "bad"; $("who").textContent = "Could not look that up."; }
+}
+let rt; $("freelancer").oninput = () => { clearTimeout(rt); rt = setTimeout(resolveWho, 400); };
+
+async function showMe() {
+  if (!account) return;
+  const p = await pub.readContract({ address: REGISTRY, abi: regAbi, functionName: "profiles", args: [account] });
+  $("me").textContent = p[0] ? `You are @${p[0]} (${p[1]}). Give clients this handle.` : "No handle yet.";
+  $("me").className = p[0] ? "ok" : "mut";
+}
+$("reg").onclick = () => run("Claiming handle", async () => {
+  const handle = $("handle").value.trim().replace(/^@/, "").toLowerCase();
+  const name = $("myname").value.trim();
+  if (!handle || !name) throw new Error("Enter a handle and your name");
+  const hash = await wallet.writeContract({ address: REGISTRY, abi: regAbi, functionName: "register", args: [handle, name] });
+  await pub.waitForTransactionReceipt({ hash });
+  await showMe();
+  log(`Handle @${handle} is yours. Give it to your client.\n${hash}`, "ok");
+});
+
 $("connect").onclick = () => run("Connecting", connect);
 
 $("fund").onclick = () => run("Funding", async () => {
-  const freelancer = $("freelancer").value.trim();
-  if (!isAddress(freelancer)) throw new Error("Enter a valid freelancer wallet address");
+  await resolveWho();
+  if (!resolved) throw new Error("Enter the freelancer's handle (like @dee_web) or wallet address");
+  if (resolved.name && !$("confirm").checked) throw new Error(`Tick the box to confirm you are paying ${resolved.name}`);
+  const freelancer = resolved.address;
   const amount = parseUnits($("amount").value || "0", 6);
   if (amount <= 0n) throw new Error("Enter an amount");
   if ($("naira").checked && amount < 1_020_000n) throw new Error("Naira payouts need at least 1.02 USD₮ (Textile FX minimum swap is 1 USD₮ after the 1% fee). Raise the amount or untick naira.");

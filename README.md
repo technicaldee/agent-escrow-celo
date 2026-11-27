@@ -8,6 +8,7 @@
 |---|---|
 | Escrow contract | [`0xaeeb6938ad76a8a674d6000487e01655cc9fc5a6`](https://celoscan.io/address/0xaeeb6938ad76a8a674d6000487e01655cc9fc5a6) |
 | Agent (ERC-8004) | ID `10162` on the Celo Identity Registry `0x8004A169FB4a3325136EB29fA0ceB6D2e539a432` |
+| Handle registry | [`0x3474f9f70202ba84d731289afa2c7c05f87d7f45`](https://celoscan.io/address/0x3474f9f70202ba84d731289afa2c7c05f87d7f45) (public handles: clients type `@handle`, see the name, confirm, pay) |
 | Agent wallet | `0x73b6b21FF635aB583aaEAEb4C58b90B01af3C71e` |
 | Attribution tag | `celo_0546234e302b` (ERC-8021, on every transaction the agent sends) |
 
@@ -45,7 +46,7 @@ Nigerian freelancers are paid by clients abroad through marketplaces that charge
 
 ```bash
 npm install
-npm test              # 10 contract tests: payouts, fee, disputes, timeouts, access control
+npm test              # 14 contract tests: payouts, fee, disputes, timeouts, access control
 npm run quote -- 25   # live Textile FX price check for 25 USD₮ in cNGN (no wallet needed)
 cp .env.example .env  # add AGENT_PRIVATE_KEY, ESCROW_ADDRESS, ATTRIBUTION_CODES
 npm run agent         # watches the contract and settles naira payouts
@@ -56,6 +57,7 @@ npm run agent         # watches the contract and settles naira payouts
 ## Layout
 
 - `contracts/DeliveryEscrow.sol`: the escrow
+- `contracts/HandleRegistry.sol`: public handles and display names
 - `src/`: the agent (`agent.ts` loop, `settle.ts` naira payout, `textile.ts` Textile RFQ client, `chain.ts` tagged wallet client)
 - `docs/index.html`: the web page for clients and freelancers (MiniPay and MetaMask)
 - `test/`: contract tests
