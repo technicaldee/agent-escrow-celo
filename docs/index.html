@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Delivery Escrow Agent</title>
+<style>
+  :root { --bg:#0e0e10; --card:#18181b; --line:#2a2a30; --fg:#f4f4f5; --mut:#a1a1aa; --acc:#fcff52; --bad:#f87171; --ok:#4ade80; }
+  * { box-sizing: border-box; }
+  body { margin:0; font:16px/1.5 system-ui,-apple-system,sans-serif; background:var(--bg); color:var(--fg); }
+  main { max-width:560px; margin:0 auto; padding:20px 16px 60px; }
+  h1 { font-size:22px; margin:8px 0 2px; } h2 { font-size:16px; margin:0 0 10px; }
+  p.sub { color:var(--mut); margin:0 0 16px; font-size:14px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:14px; }
+  label { display:block; font-size:13px; color:var(--mut); margin:10px 0 4px; }
+  input, textarea { width:100%; padding:10px; border-radius:8px; border:1px solid var(--line); background:#0e0e10; color:var(--fg); font:inherit; }
+  .row { display:flex; gap:10px; } .row > * { flex:1; }
+  button { padding:11px 14px; border:0; border-radius:8px; background:var(--acc); color:#000; font-weight:600; font:inherit; font-weight:600; cursor:pointer; margin-top:12px; }
+  button.sec { background:#2a2a30; color:var(--fg); } button:disabled { opacity:.5; cursor:wait; }
+  .btns { display:flex; flex-wrap:wrap; gap:8px; } .btns button { margin-top:8px; }
+  .mut { color:var(--mut); font-size:13px; } .bad { color:var(--bad); } .ok { color:var(--ok); }
+  .kv { display:grid; grid-template-columns:130px 1fr; gap:4px 10px; font-size:14px; word-break:break-all; }
+  .kv span:nth-child(odd) { color:var(--mut); }
+  #log { white-space:pre-wrap; font-size:13px; min-height:20px; }
+  .chk { display:flex; align-items:center; gap:8px; margin-top:10px; } .chk input { width:auto; }
+  a { color:var(--acc); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Delivery Escrow Agent</h1>
+  <p class="sub">Pay a freelancer abroad without a marketplace. Your USD₮ is held until you approve the work. Live on Celo mainnet.</p>
+
+  <div class="card">
+    <div id="wallet" class="mut">Not connected</div>
+    <button id="connect">Connect wallet</button>
+  </div>
+
+  <div class="card">
+    <h2>1. Fund a job (client)</h2>
+    <label>Freelancer wallet (0x…)</label>
+    <input id="freelancer" placeholder="0x…" />
+    <div class="row">
+      <div><label>Amount (USD₮)</label><input id="amount" inputmode="decimal" value="2" /></div>
+      <div><label>Deliver within (days)</label><input id="days" inputmode="numeric" value="7" /></div>
+    </div>
+    <div class="row">
+      <div><label>Review window after delivery (hours)</label><input id="review" inputmode="numeric" value="72" /></div>
+    </div>
+    <label>What is being delivered?</label>
+    <textarea id="brief" rows="3" placeholder="e.g. Update pricing page and fix mobile nav"></textarea>
+    <div class="chk"><input type="checkbox" id="naira" checked /><span>Pay the freelancer in naira (cNGN via Textile FX)</span></div>
+    <button id="fund">Approve USD₮ and fund</button>
+  </div>
+
+  <div class="card">
+    <h2>2. Manage a job</h2>
+    <label>Job number</label>
+    <input id="jobId" inputmode="numeric" placeholder="1" />
+    <div class="btns"><button class="sec" id="load">Load job</button></div>
+    <div id="job" class="kv" style="margin-top:12px"></div>
+    <label>Evidence link / reason (for delivered or dispute)</label>
+    <input id="evidence" placeholder="https://staging.example.com" />
+    <div class="btns">
+      <button id="deliver" class="sec">I delivered (freelancer)</button>
+      <button id="approve">Approve and pay (client)</button>
+      <button id="dispute" class="sec">Dispute (client)</button>
+      <button id="auto" class="sec">Release after window</button>
+      <button id="claim" class="sec">Take USD₮ instead (freelancer)</button>
+    </div>
+  </div>
+
+  <div class="card"><div id="log" class="mut">Ready.</div></div>
+  <p class="mut">Contract: <a href="https://celoscan.io/address/0x663b081f621eaf058ff3b7d8298f43c3b80d15ae" target="_blank" rel="noopener">0x663b…15ae</a> ·
+  <a href="https://github.com/technicaldee/agent-escrow-celo" target="_blank" rel="noopener">Source</a> · 1% fee · every payment is tagged onchain</p>
+</main>
+
+<script type="module">
+import { createPublicClient, createWalletClient, custom, http, parseAbi, parseUnits, formatUnits, keccak256, toHex, parseEventLogs, getAddress, isAddress } from "https://esm.sh/viem@2.58.8";
+import { celo } from "https://esm.sh/viem@2.58.8/chains";
+import { withAttribution } from "https://esm.sh/@celo/attribution-tags@0.7.0?deps=viem@2.58.8";
+
+const ESCROW = "0x663b081f621eaf058ff3b7d8298f43c3b80d15ae";
+const USDT = "0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e";
+const TAG = "celo_0546234e302b";
+const STATUS = ["None","Funded (waiting for delivery)","Delivered (in review)","Disputed (agent deciding)","Paying in naira…","Converting to naira…","Paid in naira","Paid in USD₮","Refunded"];
+
+const abi = parseAbi([
+  "function fund(address freelancer,uint128 amount,uint40 deliverBy,uint40 reviewWindow,bool payNaira,bytes32 briefHash) returns (uint256)",
+  "function approve(uint256 id)",
+  "function dispute(uint256 id,string reasonURI)",
+  "function markDelivered(uint256 id,string evidenceURI)",
+  "function autoRelease(uint256 id)",
+  "function claimUsdt(uint256 id)",
+  "function jobs(uint256) view returns (address client,address freelancer,uint128 amount,uint40 deliverBy,uint40 reviewWindow,uint40 deliveredAt,uint40 disputedAt,uint40 releasingAt,uint8 status,bool payNaira,bytes32 briefHash,uint128 pendingNet)",
+  "event JobFunded(uint256 indexed id,address indexed client,address indexed freelancer,uint256 amount,uint40 deliverBy,uint40 reviewWindow,bool payNaira,bytes32 briefHash)",
+]);
+const erc20 = parseAbi([
+  "function balanceOf(address) view returns (uint256)",
+  "function allowance(address,address) view returns (uint256)",
+  "function approve(address,uint256) returns (bool)",
+]);
+
+const $ = (id) => document.getElementById(id);
+const log = (m, cls = "mut") => { $("log").className = cls; $("log").textContent = m; };
+const pub = createPublicClient({ chain: celo, transport: http("https://forno.celo.org") });
+let wallet, account;
+
+async function connect() {
+  if (!window.ethereum) { log("No wallet found. Open this page inside MiniPay or use MetaMask.", "bad"); return; }
+  const [addr] = await window.ethereum.request({ method: "eth_requestAccounts" });
+  try { await window.ethereum.request({ method: "wallet_switchEthereumChain", params: [{ chainId: "0xa4ec" }] }); } catch (e) { /* MiniPay is already on Celo */ }
+  account = getAddress(addr);
+  wallet = createWalletClient({ account, chain: celo, transport: custom(window.ethereum) }).extend(withAttribution(TAG));
+  const bal = await pub.readContract({ address: USDT, abi: erc20, functionName: "balanceOf", args: [account] });
+  $("wallet").textContent = `${account.slice(0,6)}…${account.slice(-4)} · ${formatUnits(bal, 6)} USD₮`;
+  $("connect").textContent = "Connected";
+  log("Wallet connected.", "ok");
+}
+
+async function run(label, fn) {
+  if (!wallet) { await connect(); if (!wallet) return; }
+  try { log(`${label}…`); await fn(); } catch (e) { log(`Failed: ${e.shortMessage || e.message}`, "bad"); }
+}
+const send = async (functionName, args) => {
+  const hash = await wallet.writeContract({ address: ESCROW, abi, functionName, args });
+  log(`Sent. Waiting for confirmation…\n${hash}`);
+  const receipt = await pub.waitForTransactionReceipt({ hash });
+  if (receipt.status !== "success") throw new Error("Transaction reverted");
+  return { hash, receipt };
+};
+
+$("connect").onclick = () => run("Connecting", connect);
+
+$("fund").onclick = () => run("Funding", async () => {
+  const freelancer = $("freelancer").value.trim();
+  if (!isAddress(freelancer)) throw new Error("Enter a valid freelancer wallet address");
+  const amount = parseUnits($("amount").value || "0", 6);
+  if (amount <= 0n) throw new Error("Enter an amount");
+  const now = Math.floor(Date.now() / 1000);
+  const deliverBy = now + Math.round(Number($("days").value) * 86400);
+  const reviewWindow = Math.round(Number($("review").value) * 3600);
+  const briefHash = keccak256(toHex($("brief").value.trim() || "unspecified"));
+
+  const allowance = await pub.readContract({ address: USDT, abi: erc20, functionName: "allowance", args: [account, ESCROW] });
+  if (allowance < amount) {
+    log("Step 1/2: approve USD₮ for the escrow…");
+    const h = await wallet.writeContract({ address: USDT, abi: erc20, functionName: "approve", args: [ESCROW, amount] });
+    await pub.waitForTransactionReceipt({ hash: h });
+  }
+  log("Step 2/2: funding the job…");
+  const { receipt, hash } = await send("fund", [getAddress(freelancer), amount, deliverBy, reviewWindow, $("naira").checked, briefHash]);
+  const [ev] = parseEventLogs({ abi, eventName: "JobFunded", logs: receipt.logs });
+  $("jobId").value = ev.args.id.toString();
+  log(`Funded. Job number ${ev.args.id}. Your USD₮ is in escrow.\n${hash}`, "ok");
+  await loadJob();
+});
+
+async function loadJob() {
+  const id = BigInt($("jobId").value || "0");
+  const j = await pub.readContract({ address: ESCROW, abi, functionName: "jobs", args: [id] });
+  if (j[8] === 0) { $("job").innerHTML = ""; throw new Error("No such job"); }
+  const d = (t) => (t ? new Date(Number(t) * 1000).toLocaleString() : "–");
+  const rows = [
+    ["Status", STATUS[j[8]]], ["Client", j[0]], ["Freelancer", j[1]],
+    ["Amount", `${formatUnits(j[2], 6)} USD₮`], ["Deliver by", d(j[3])],
+    ["Review window", `${Number(j[4]) / 3600} h`], ["Delivered", d(j[5])],
+    ["Payout", j[9] ? "naira (cNGN)" : "USD₮"],
+  ];
+  $("job").innerHTML = rows.map(([k, v]) => `<span>${k}</span><span>${String(v).replace(/</g, "&lt;")}</span>`).join("");
+}
+$("load").onclick = () => run("Loading", async () => { await loadJob(); log("Loaded.", "ok"); });
+
+const act = (btn, label, fn, args) => ($(btn).onclick = () => run(label, async () => {
+  const id = BigInt($("jobId").value || "0");
+  const { hash } = await send(fn, args(id));
+  await loadJob();
+  log(`Done: ${label}.\n${hash}`, "ok");
+}));
+act("deliver", "Marking delivered", "markDelivered", (id) => [id, $("evidence").value.trim() || "no link"]);
+act("approve", "Approving payment", "approve", (id) => [id]);
+act("dispute", "Opening dispute", "dispute", (id) => [id, $("evidence").value.trim() || "no reason given"]);
+act("auto", "Releasing payment", "autoRelease", (id) => [id]);
+act("claim", "Claiming USD₮", "claimUsdt", (id) => [id]);
+</script>
+</body>
+</html>
