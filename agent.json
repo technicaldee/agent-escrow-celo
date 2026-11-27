@@ -1,11 +1,11 @@
 {
   "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
-  "name": "Delivery Escrow Agent",
-  "description": "Holds a client's USD₮ until freelance work is approved. Reviews delivery evidence, rules on disputes, and pays freelancers in USD₮ or in naira (cNGN via Textile FX). 1% fee, every decision recorded onchain.",
+  "name": "Held",
+  "description": "Pay anyone, held until it’s done. Holds a client's USD₮ until the work is approved, reviews delivery, rules on disputes and pays freelancers in USD₮ or naira (cNGN via Textile FX). 1% fee, every decision recorded onchain.",
   "services": [
     {
       "name": "web",
-      "endpoint": "https://github.com/technicaldee/agent-escrow-celo"
+      "endpoint": "https://technicaldee.github.io/agent-escrow-celo/"
     },
     {
       "name": "escrow",
@@ -22,5 +22,6 @@
       "agentId": 10162,
       "agentRegistry": "eip155:42220:0x8004A169FB4a3325136EB29fA0ceB6D2e539a432"
     }
-  ]
+  ],
+  "image": "https://technicaldee.github.io/agent-escrow-celo/brand/icon-512.png"
 }

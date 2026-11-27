@@ -1,6 +1,8 @@
-# Delivery Escrow Agent
+# Held: pay anyone, held until it’s done
 
 **Pay a freelancer abroad without a marketplace.** A client pays USD₮ into an onchain escrow. When the work is approved, an agent converts the payout to **naira (cNGN) on Textile FX** and sends it to the freelancer. 1% fee instead of the 10–20% marketplaces take. Live on **Celo mainnet**.
+
+<img src="docs/brand/held-icon.svg" width="72" alt="Held logo" />
 
 **Live demo:** https://technicaldee.github.io/agent-escrow-celo/ (works in MiniPay and MetaMask)
 

@@ -1,0 +1,23 @@
+{
+  "name": "Held",
+  "short_name": "Held",
+  "description": "Pay anyone. Held until it\u2019s done.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#FCFF52",
+  "theme_color": "#FCFF52",
+  "icons": [
+    {
+      "src": "brand/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "brand/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
