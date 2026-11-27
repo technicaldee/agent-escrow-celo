@@ -3,175 +3,224 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Delivery Escrow: get paid safely, anywhere</title>
-<meta name="description" content="Pay a freelancer abroad without a marketplace. Your USD₮ is held in escrow until you approve the work, then paid out in naira. Live on Celo." />
+<title>Safe Pay: pay anyone, safely</title>
+<meta name="description" content="Pay someone for their work. Your money waits in a safe until the work is done, then they get paid in naira." />
+<meta name="theme-color" content="#FCFF52" />
 <link rel="icon" href="img/shield.png" />
 <style>
-  :root { color-scheme: light; }
-  * { box-sizing: border-box; }
-  body { margin: 0; font-family: var(--fontFamilyBase, "Segoe UI", system-ui, -apple-system, sans-serif); color: var(--colorNeutralForeground1, #242424);
-         background: radial-gradient(1200px 500px at 50% -120px, #fdf7c9 0%, #f6f6f8 55%) no-repeat, #f6f6f8; min-height: 100vh; }
-  header { position: sticky; top: 0; z-index: 5; backdrop-filter: blur(10px); background: rgba(255,255,255,.8); border-bottom: 1px solid #e6e6ea; }
-  .bar { max-width: 560px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; gap: 10px; }
-  .brand { display: flex; align-items: center; gap: 8px; font-weight: 600; flex: 1; }
-  .brand img { width: 28px; height: 28px; }
-  select#cur { appearance: none; border: 1px solid #d4d4d8; border-radius: 8px; background: #fff; padding: 5px 24px 5px 10px; font: inherit; font-size: 13px; font-weight: 600; color: #242424; cursor: pointer;
-    background-image: linear-gradient(45deg, transparent 50%, #52525b 50%), linear-gradient(135deg, #52525b 50%, transparent 50%); background-position: calc(100% - 13px) 55%, calc(100% - 8px) 55%; background-size: 5px 5px; background-repeat: no-repeat; }
-  main { max-width: 560px; margin: 0 auto; padding: 20px 16px 80px; }
-  h1 { font-size: 30px; line-height: 1.15; margin: 8px 0 6px; letter-spacing: -.02em; }
-  .sub { color: #52525b; margin: 0 0 18px; font-size: 16px; line-height: 1.45; }
-  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 0 0 18px; }
-  .step { background: #fff; border: 1px solid #e6e6ea; border-radius: 14px; padding: 10px 6px; text-align: center; font-size: 12px; color: #52525b; }
-  .step img { width: 34px; height: 34px; display: block; margin: 0 auto 4px; }
-  .step b { display: block; color: #18181b; font-size: 13px; }
-  .tabs { display: flex; gap: 6px; background: #ececf0; padding: 4px; border-radius: 12px; margin-bottom: 14px; }
-  .tabs fluent-button { flex: 1; }
-  .card { background: #fff; border: 1px solid #e6e6ea; border-radius: 16px; padding: 18px; margin-bottom: 14px; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
-  .card h2 { font-size: 18px; margin: 0 0 4px; } .card p { margin: 0 0 12px; color: #52525b; font-size: 14px; }
-  .field { display: block; margin: 14px 0 0; } .field > span { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; }
-  .field fluent-text-input, .field fluent-textarea { width: 100%; max-width: none; min-width: 0; display: block; }
-  fluent-text-input::part(root), fluent-textarea::part(root) { width: 100%; }
-  .sw { display: flex; align-items: center; gap: 10px; margin-top: 14px; cursor: pointer; } .sw span { font-size: 14px; }
-  .row { display: flex; gap: 10px; } .row > * { flex: 1; min-width: 0; }
-  .chips { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
-  .who { display: none; align-items: center; gap: 12px; padding: 12px; margin-top: 10px; border-radius: 12px; background: #f0fdf4; border: 1px solid #bbf7d0; }
-  .who.warn { background: #fffbeb; border-color: #fde68a; } .who.bad { background: #fef2f2; border-color: #fecaca; }
-  .who .t { font-weight: 600; } .who .s { font-size: 13px; color: #52525b; word-break: break-all; }
-  .est { margin-top: 10px; padding: 10px 12px; border-radius: 10px; background: #fafaf0; border: 1px dashed #e4e0a0; font-size: 14px; }
-  .actions { margin-top: 18px; display: flex; gap: 8px; flex-wrap: wrap; } .actions fluent-button.main { flex: 1; min-height: 44px; }
-  details { margin-top: 12px; } summary { cursor: pointer; font-size: 13px; color: #52525b; }
-  .msg { margin-bottom: 14px; display: none; } .msg.show { display: block; }
-  .job { border: 1px solid #e6e6ea; border-radius: 14px; padding: 14px; margin-top: 10px; background: #fff; }
-  .job .top { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
-  .job .amt { font-size: 20px; font-weight: 700; } .job .meta { color: #52525b; font-size: 13px; margin-top: 4px; }
-  .job .btns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; align-items: center; }
-  .job input { flex: 1 1 180px; padding: 9px 10px; border-radius: 8px; border: 1px solid #d4d4d8; font: inherit; }
-  .link { word-break: break-all; font-size: 13px; background: #f4f4f6; padding: 10px; border-radius: 10px; margin-top: 8px; }
-  .empty { text-align: center; color: #71717a; padding: 22px 8px; }
-  footer { color: #71717a; font-size: 12px; text-align: center; margin-top: 22px; line-height: 1.6; } footer a { color: #52525b; }
-  .hide { display: none !important; }
-  #help details { border-top: 1px solid #ececf0; padding: 10px 0; } #help details:first-of-type { border-top: 0; } #help summary { cursor: pointer; } #help details p { margin: 8px 0 0; }
-  #nowallet a { color: inherit; font-weight: 600; }
+  :root { --y:#FCFF52; --ink:#0b0b0c; --mut:#6b6b73; --line:#ececf0; --green:#00b25a; --red:#e5484d; --soft:#f6f6f2; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; }
+  body { font-family: ui-rounded, "SF Pro Rounded", "Segoe UI", system-ui, -apple-system, sans-serif; color: var(--ink); background: linear-gradient(var(--y) 0, var(--y) 320px, #fff 320px); min-height: 100vh; }
+  button { font: inherit; color: inherit; border: 0; cursor: pointer; }
+  .top { max-width: 460px; margin: 0 auto; padding: 14px 18px; display: flex; align-items: center; gap: 8px; }
+  .brand { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 18px; flex: 1; letter-spacing: -.02em; }
+  .brand img { width: 30px; height: 30px; }
+  .chip { background: rgba(255,255,255,.75); border-radius: 999px; padding: 8px 12px; font-size: 13px; font-weight: 700; }
+  select.chip { appearance: none; border: 0; padding-right: 12px; cursor: pointer; }
+  .app { max-width: 460px; margin: 0 auto; }
+  .screen { display: none; animation: pop .28s ease both; } .screen.on { display: block; }
+  @keyframes pop { from { opacity: 0; transform: translateY(12px) scale(.985); } to { opacity: 1; transform: none; } }
+  .hero { padding: 6px 22px 26px; position: relative; }
+  .hero h1 { font-size: 44px; line-height: 1; letter-spacing: -.04em; margin: 8px 0 10px; font-weight: 900; }
+  .hero p { margin: 0; font-size: 17px; max-width: 280px; line-height: 1.35; }
+  .hero img.float { position: absolute; right: 8px; top: 6px; width: 120px; animation: bob 3.2s ease-in-out infinite; }
+  @keyframes bob { 50% { transform: translateY(-8px) rotate(4deg); } }
+  .sheet { background: #fff; border-radius: 32px 32px 0 0; padding: 22px 18px 90px; min-height: 62vh; box-shadow: 0 -8px 30px rgba(0,0,0,.06); }
+  .plain { padding: 8px 18px 90px; }
+  .bigbtns { display: grid; gap: 12px; }
+  .big { display: flex; align-items: center; gap: 14px; text-align: left; padding: 18px; border-radius: 24px; font-size: 20px; font-weight: 800; transition: transform .12s; }
+  .big:active { transform: scale(.97); } .big img { width: 52px; height: 52px; } .big small { display: block; font-weight: 500; font-size: 14px; opacity: .75; margin-top: 2px; }
+  .big.dark { background: var(--ink); color: var(--y); } .big.light { background: var(--soft); }
+  h3 { font-size: 16px; margin: 26px 0 10px; letter-spacing: -.01em; }
+  .back { background: rgba(255,255,255,.75); border-radius: 999px; padding: 8px 14px; font-weight: 700; font-size: 14px; margin: 4px 0 8px 18px; }
+  .card { background: #fff; border-radius: 24px; padding: 18px; margin: 0 0 12px; }
+  .lbl { font-size: 13px; font-weight: 700; color: var(--mut); margin: 0 0 8px; text-transform: uppercase; letter-spacing: .04em; }
+  .inp { width: 100%; border: 2px solid var(--line); border-radius: 16px; padding: 15px 16px; font: inherit; font-size: 18px; font-weight: 600; background: #fff; outline: none; }
+  .inp:focus { border-color: var(--ink); }
+  .who { display: none; align-items: center; gap: 12px; margin-top: 12px; padding: 12px; border-radius: 16px; background: #eafff3; }
+  .who.warn { background: #fff6e0; } .who.bad { background: #ffecec; } .who .t { font-weight: 800; font-size: 17px; } .who .s { color: var(--mut); font-size: 13px; word-break: break-all; }
+  .amount { text-align: center; padding: 14px 0 4px; font-size: 56px; font-weight: 900; letter-spacing: -.04em; min-height: 82px; }
+  .amount .ph { color: #c9c9cf; }
+  .sub { text-align: center; color: var(--mut); font-size: 14px; min-height: 20px; margin-bottom: 8px; }
+  .chips { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 6px 0 12px; }
+  .pill { background: var(--soft); border-radius: 999px; padding: 9px 14px; font-weight: 800; font-size: 14px; } .pill:active { transform: scale(.95); }
+  .keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 6px 0 14px; }
+  .keys button { background: var(--soft); border-radius: 18px; padding: 14px 0; font-size: 24px; font-weight: 800; } .keys button:active { background: #e6e6df; transform: scale(.96); }
+  .cta { width: 100%; background: var(--ink); color: var(--y); border-radius: 20px; padding: 18px; font-size: 18px; font-weight: 900; letter-spacing: -.01em; transition: transform .12s; }
+  .cta:active { transform: scale(.98); } .cta[disabled] { opacity: .45; } .cta.green { background: var(--green); color: #fff; } .cta.ghost { background: var(--soft); color: var(--ink); }
+  .row2 { display: flex; gap: 10px; } .row2 > * { flex: 1; }
+  .sum { display: grid; gap: 12px; } .sum div { display: flex; justify-content: space-between; gap: 12px; font-size: 15px; } .sum b { text-align: right; }
+  .sum .big2 { font-size: 30px; font-weight: 900; letter-spacing: -.03em; }
+  .msg { display: none; margin: 0 18px 12px; padding: 14px 16px; border-radius: 18px; font-weight: 600; font-size: 14px; background: #fff; } .msg.show { display: block; }
+  .msg.err { background: #ffecec; color: #8a1c20; } .msg.ok { background: #eafff3; color: #0b5d2f; } .msg.warn { background: #fff6e0; color: #6b4b00; }
+  .job { display: flex; align-items: center; gap: 12px; background: var(--soft); border-radius: 20px; padding: 14px; margin-bottom: 10px; cursor: pointer; text-align: left; width: 100%; } .job:active { transform: scale(.98); }
+  .job .ic { width: 42px; height: 42px; } .job .m { flex: 1; min-width: 0; } .job .n { font-weight: 800; } .job .st { color: var(--mut); font-size: 13px; }
+  .job .a { font-weight: 900; font-size: 17px; }
+  .empty { text-align: center; color: var(--mut); padding: 22px 6px; font-size: 15px; }
+  .tl { list-style: none; padding: 0; margin: 14px 0 4px; } .tl li { display: flex; gap: 12px; align-items: center; padding: 8px 0; color: #a0a0a8; font-weight: 700; }
+  .tl li.done { color: var(--ink); } .tl li.now { color: var(--ink); } .dot { width: 26px; height: 26px; border-radius: 50%; background: #e4e4e8; display: grid; place-items: center; font-size: 13px; color: #fff; flex: none; }
+  .done .dot { background: var(--green); } .now .dot { background: var(--y); color: var(--ink); box-shadow: 0 0 0 5px rgba(252,255,82,.5); }
+  .done-hero { text-align: center; padding: 18px 8px 8px; } .done-hero img { width: 120px; animation: bob 2.6s ease-in-out infinite; } .done-hero h2 { font-size: 30px; letter-spacing: -.03em; margin: 8px 0; font-weight: 900; }
+  .link { word-break: break-all; font-size: 13px; background: var(--soft); border-radius: 14px; padding: 12px; margin: 10px 0; }
+  .qr { display: block; margin: 8px auto; width: 168px; height: 168px; border-radius: 16px; }
+  .btnrow { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; } .btnrow > * { flex: 1 1 140px; }
+  .how li { margin: 6px 0; } .how { font-size: 15px; line-height: 1.45; padding-left: 20px; }
+  .txt { color: var(--mut); font-size: 14px; line-height: 1.5; }
+  .hide { display: none !important; } details summary { cursor: pointer; font-weight: 700; padding: 8px 0; }
+  a { color: inherit; }
+  .foot { background: #fff; text-align: center; font-size: 12px; color: var(--mut); padding: 18px 12px 30px; }
+  .confetti { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 20; } .confetti span { position: absolute; top: -30px; font-size: 26px; animation: fall 2.4s ease-in forwards; }
+  @keyframes fall { to { transform: translateY(110vh) rotate(360deg); opacity: .9; } }
 </style>
 </head>
 <body>
-<header><div class="bar">
-  <div class="brand"><img src="img/shield.png" alt="" /> Delivery Escrow</div>
-  <select id="cur" aria-label="Currency"></select>
-  <fluent-button id="connect" appearance="primary" size="small">Connect wallet</fluent-button>
-</div></header>
+<div class="top">
+  <div class="brand"><img src="img/shield.png" alt="" /> Safe Pay</div>
+  <select id="cur" class="chip" aria-label="Currency"></select>
+  <button id="wallet" class="chip">Connect</button>
+</div>
 
-<main>
-  <h1>Get paid safely, anywhere.</h1>
-  <p class="sub">Pay someone for their work without marketplace fees. Your money is held safely until the work is done, then they are paid in naira.</p>
+<div id="msg" class="msg"></div>
 
-  <div class="steps">
-    <div class="step"><img src="img/money.png" alt="" /><b>1. Pay</b>held safely</div>
-    <div class="step"><img src="img/package.png" alt="" /><b>2. Work</b>gets done</div>
-    <div class="step"><img src="img/check.png" alt="" /><b>3. Approve</b>you say it’s good</div>
-    <div class="step"><img src="img/lock.png" alt="" /><b>4. Paid</b>in naira</div>
-  </div>
+<main class="app">
 
-  <div class="tabs">
-    <fluent-button id="t-pay" appearance="primary">Pay</fluent-button>
-    <fluent-button id="t-earn" appearance="subtle">Get paid</fluent-button>
-    <fluent-button id="t-jobs" appearance="subtle">My jobs</fluent-button>
-  </div>
-
-  <fluent-message-bar id="msg" class="msg" intent="info"><span id="msgtext"></span></fluent-message-bar>
-  <fluent-message-bar id="nowallet" class="msg" intent="warning"><span>To pay or get paid you need a wallet app. Open this page in <b>MiniPay</b>, or install <b>MetaMask</b>. <a href="#help">New to this? Start here.</a></span></fluent-message-bar>
-
-  <!-- PAY -->
-  <section id="p-pay">
-    <div class="card">
-      <h2>Pay someone</h2>
-      <p>Enter their pay name (like <b>@dee_web</b>). We show their name so you can check it’s them.</p>
-      <label class="field"><span>Who are you paying?</span>
-        <fluent-text-input id="freelancer" placeholder="@their_pay_name" autocapitalize="none" autocomplete="off"></fluent-text-input></label>
-      <div id="who" class="who"><fluent-avatar id="whoav" size="40"></fluent-avatar><div><div class="t" id="whot"></div><div class="s" id="whos"></div></div></div>
-      <label class="field hide" id="confirmRow"><fluent-checkbox id="confirm">Yes, this is the right person</fluent-checkbox></label>
-
-      <label class="field"><span id="amountlabel">Amount</span>
-        <fluent-text-input id="amount" inputmode="decimal"></fluent-text-input></label>
-      <div class="chips" id="chips"></div>
-      <div class="est" id="est">Enter an amount to see the naira value.</div>
-
-      <label class="field"><span>What is this payment for?</span>
-        <fluent-textarea id="brief" rows="3" placeholder="e.g. Update my website’s pricing page"></fluent-textarea></label>
-      <div class="sw"><fluent-switch id="naira" checked></fluent-switch><span id="nairalabel">Pay them in naira</span></div>
-      <details><summary>More options</summary>
-        <div class="row"><label class="field"><span>Work is due in (days)</span><fluent-text-input id="days" value="7" inputmode="numeric"></fluent-text-input></label>
-        <label class="field"><span>Time for you to check it (hours)</span><fluent-text-input id="review" value="72" inputmode="numeric"></fluent-text-input></label></div>
-      </details>
-      <div class="actions"><fluent-button id="fund" appearance="primary" class="main">Pay and hold safely</fluent-button></div>
+  <!-- HOME -->
+  <section id="s-home" class="screen on">
+    <div class="hero">
+      <img class="float" src="img/lock.png" alt="" />
+      <h1>Pay anyone.<br/>Safely.</h1>
+      <p>Your money waits in a safe until the work is done.</p>
     </div>
+    <div class="sheet">
+      <div class="bigbtns">
+        <button class="big dark" id="goSend"><img src="img/money.png" alt="" /><span>Send a payment<small>Pay someone for their work</small></span></button>
+        <button class="big light" id="goEarn"><img src="img/package.png" alt="" /><span>Get paid<small>Share your pay link</small></span></button>
+      </div>
+      <h3>Your payments</h3>
+      <div id="jobs"><div class="empty">Connect to see your payments.</div></div>
+      <details style="margin-top:18px"><summary>How does this work?</summary>
+        <ol class="how">
+          <li><b>You pay.</b> Your money goes into a safe, not to them yet.</li>
+          <li><b>They do the work</b> and tell you it’s done.</li>
+          <li><b>You approve.</b> Then they get paid, in naira if they like.</li>
+          <li>Not happy? <b>You can dispute</b> before it’s paid.</li>
+        </ol>
+        <p class="txt">The safe is a public smart contract on Celo, so nobody can quietly move your money. Fee: 1%. You pay in dollars (USD₮), so you need a wallet app like <b>MiniPay</b> with dollars in it.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- SEND: step 1 -->
+  <section id="s-send" class="screen">
+    <button class="back" data-back>← Back</button>
+    <div class="plain">
+      <div class="card">
+        <p class="lbl">Who are you paying?</p>
+        <input id="to" class="inp" placeholder="@their_pay_name" autocapitalize="none" autocomplete="off" />
+        <div id="who" class="who"><fluent-avatar id="whoav" size="40"></fluent-avatar><div><div class="t" id="whot"></div><div class="s" id="whos"></div></div></div>
+      </div>
+      <div class="card">
+        <p class="lbl">How much?</p>
+        <div class="amount" id="amtshow"></div>
+        <div class="sub" id="amtsub"></div>
+        <div class="chips" id="chips"></div>
+        <div class="keys" id="keys"></div>
+      </div>
+      <div class="card">
+        <p class="lbl">What’s it for?</p>
+        <input id="note" class="inp" placeholder="e.g. Update my pricing page" maxlength="140" />
+      </div>
+      <button class="cta" id="toReview">Continue</button>
+    </div>
+  </section>
+
+  <!-- SEND: review -->
+  <section id="s-review" class="screen">
+    <button class="back" data-back>← Back</button>
+    <div class="plain">
+      <div class="card">
+        <p class="lbl">You’re paying</p>
+        <div style="display:flex;gap:12px;align-items:center"><fluent-avatar id="rvav" size="48"></fluent-avatar><div><div style="font-weight:900;font-size:22px" id="rvname"></div><div class="txt" id="rvhandle"></div></div></div>
+      </div>
+      <div class="card sum">
+        <div><span>Amount</span><b class="big2" id="rvamt"></b></div>
+        <div><span>They get</span><b id="rvget"></b></div>
+        <div><span>Fee (1%)</span><b id="rvfee"></b></div>
+        <div><span>For</span><b id="rvnote"></b></div>
+        <div><span>You pay</span><b id="rvusd"></b></div>
+      </div>
+      <div class="card">
+        <label style="display:flex;gap:10px;align-items:center;font-weight:700"><input type="checkbox" id="naira" checked style="width:22px;height:22px" /> Pay them in naira</label>
+        <details style="margin-top:6px"><summary>More options</summary>
+          <div class="row2" style="margin-top:8px">
+            <div><p class="lbl">Due in (days)</p><input id="days" class="inp" value="7" inputmode="numeric" /></div>
+            <div><p class="lbl">Your check time (hrs)</p><input id="review" class="inp" value="72" inputmode="numeric" /></div>
+          </div>
+        </details>
+      </div>
+      <p class="txt" style="text-align:center">Held safely until you approve. If they never deliver, you can get a refund.</p>
+      <button class="cta green" id="pay">Pay and hold safely</button>
+    </div>
+  </section>
+
+  <!-- DONE -->
+  <section id="s-done" class="screen">
+    <div class="plain">
+      <div class="done-hero"><img src="img/check.png" alt="" /><h2>Payment is safe!</h2><p class="txt" id="doneText"></p></div>
+      <div class="card"><p class="lbl">Tell them</p><p class="txt" style="margin:0 0 6px">Ask them to open the app and look under <b>Your payments</b>. They’ll see this job and can start work.</p></div>
+      <button class="cta" id="doneJob">Track this payment</button>
+      <button class="cta ghost" id="doneHome" style="margin-top:10px">Done</button>
+    </div>
+  </section>
+
+  <!-- JOB -->
+  <section id="s-job" class="screen">
+    <button class="back" data-back>← Back</button>
+    <div class="plain"><div id="jobview"></div></div>
   </section>
 
   <!-- EARN -->
-  <section id="p-earn" class="hide">
-    <div class="card">
-      <h2>Your pay name</h2>
-      <p>Choose a short name once, like <b>dee_web</b>. Clients type it to pay you, and see your real name so they know it’s you.</p>
-      <div id="me"></div>
-      <div id="claim">
-        <div class="row">
-          <label class="field"><span>Pay name</span><fluent-text-input id="handle" placeholder="dee_web" autocapitalize="none"></fluent-text-input></label>
-          <label class="field"><span>Your name</span><fluent-text-input id="myname" placeholder="Edidiong Udoh"></fluent-text-input></label>
+  <section id="s-earn" class="screen">
+    <button class="back" data-back>← Back</button>
+    <div class="plain">
+      <div id="earnClaim" class="card">
+        <p class="lbl">Pick your pay name</p>
+        <input id="handle" class="inp" placeholder="dee_web" autocapitalize="none" />
+        <p class="lbl" style="margin-top:14px">Your name</p>
+        <input id="myname" class="inp" placeholder="Edidiong Udoh" />
+        <p class="txt">Clients type your pay name to pay you. They see your name so they know it’s you.</p>
+        <button class="cta" id="claimBtn">Claim my pay name</button>
+      </div>
+      <div id="earnShare" class="hide">
+        <div class="card" style="text-align:center">
+          <fluent-avatar id="meav" size="56"></fluent-avatar>
+          <div style="font-weight:900;font-size:24px;margin-top:6px" id="mename"></div><div class="txt" id="mehandle"></div>
+          <img id="qr" class="qr hide" alt="QR code of your pay link" />
+          <div class="link" id="plink"></div>
+          <div class="btnrow"><button class="cta" id="copy">Copy link</button><button class="cta green" id="wa">Share on WhatsApp</button></div>
         </div>
-        <div class="actions"><fluent-button id="reg" appearance="primary" class="main">Claim my pay name</fluent-button></div>
+        <p class="txt" style="text-align:center">Send this link to your client. When they pay, the job shows up on your home screen.</p>
       </div>
     </div>
-    <div class="card">
-      <h2>How you get paid</h2>
-      <p style="margin:0">1. Send your client your pay link. 2. They pay, and you see the job under <b>My jobs</b>. 3. Do the work and mark it done. 4. When they approve, the naira arrives in your wallet.</p>
-    </div>
   </section>
-
-  <!-- JOBS -->
-  <section id="p-jobs" class="hide">
-    <div class="card">
-      <div class="top" style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h2 style="margin:0">My jobs</h2><fluent-button id="refresh" size="small">Refresh</fluent-button></div>
-      <div id="jobs"><div class="empty">Connect your wallet to see your jobs.</div></div>
-    </div>
-  </section>
-
-  <section id="help">
-    <div class="card">
-      <h2>New here? Start in 3 steps</h2>
-      <details open><summary><b>1. Get a wallet app</b></summary><p>MiniPay (inside the Opera Mini browser) is the easiest. It is free and works on a phone. MetaMask also works.</p></details>
-      <details><summary><b>2. Get dollars (USD₮) on Celo</b></summary><p>Inside MiniPay use <b>Add cash</b>. Or buy USDT on an exchange and withdraw it on the <b>Celo network</b> to your wallet address. Always send a small test amount first.</p></details>
-      <details><summary><b>3. Pay</b></summary><p>Enter the pay name your freelancer gave you, the amount, and what it is for. Your money is held safely. Nothing is paid until you approve.</p></details>
-    </div>
-    <div class="card">
-      <h2>Questions</h2>
-      <details><summary><b>Is my money safe?</b></summary><p>It is held by a public smart contract on Celo, not by us. Anyone can check it. If you do nothing, it can only go to the freelancer after the time you set, and you can open a dispute before then.</p></details>
-      <details><summary><b>What if the work is not delivered?</b></summary><p>You can ask for a refund once the due date and a short grace period have passed.</p></details>
-      <details><summary><b>What does it cost?</b></summary><p>1% when the freelancer is paid. Marketplaces typically charge 10–20%.</p></details>
-      <details><summary><b>Why naira?</b></summary><p>Freelancers in Nigeria can be paid straight in naira at the live exchange rate, or take dollars if they prefer.</p></details>
-    </div>
-  </section>
-
-  <footer>
-    1% fee · every payment is tagged and recorded on Celo · <a href="https://celoscan.io/address/0xaeeb6938ad76a8a674d6000487e01655cc9fc5a6" target="_blank" rel="noopener">escrow contract</a> ·
-    <a href="https://github.com/technicaldee/agent-escrow-celo" target="_blank" rel="noopener">source</a>
-  </footer>
 </main>
+
+<div class="foot">1% fee · every payment is recorded on Celo · <a href="https://github.com/technicaldee/agent-escrow-celo" target="_blank" rel="noopener">source</a></div>
+<div id="confetti" class="confetti"></div>
 
 <script type="module">
 import { createPublicClient, createWalletClient, custom, http, parseAbi, parseAbiItem, parseUnits, formatUnits, keccak256, toHex, parseEventLogs, getAddress, isAddress } from "https://esm.sh/viem@2.58.8";
 import { celo } from "https://esm.sh/viem@2.58.8/chains";
 import { withAttribution } from "https://esm.sh/@celo/attribution-tags@0.7.0?deps=viem@2.58.8";
-import "https://esm.sh/@fluentui/web-components@3.2.5/web-components.js";
-import { setTheme } from "https://esm.sh/@fluentui/web-components@3.2.5/theme/set-theme.js";
-import { webLightTheme } from "https://esm.sh/@fluentui/tokens@1.0.0-alpha.25";
-setTheme(webLightTheme);
+import "https://esm.sh/@fluentui/web-components@3.2.5/avatar.js";
 
 const ESCROW = "0xaeeb6938ad76a8a674d6000487e01655cc9fc5a6";
 const REGISTRY = "0x3474f9f70202ba84d731289afa2c7c05f87d7f45";
 const USDT = "0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e";
 const TAG = "celo_0546234e302b";
 const FROM_BLOCK = 83907000n;
-const MIN_NAIRA = 1_020_000n; // Textile FX minimum swap is 1 USD₮ after the 1% fee
+const MIN_NAIRA = 1_020_000n;
 
 const escrowAbi = parseAbi([
   "function fund(address freelancer,uint128 amount,uint40 deliverBy,uint40 reviewWindow,bool payNaira,bytes32 briefHash) returns (uint256)",
@@ -188,21 +237,42 @@ const regAbi = parseAbi([
 ]);
 const erc20 = parseAbi(["function balanceOf(address) view returns (uint256)","function allowance(address,address) view returns (uint256)","function approve(address,uint256) returns (bool)"]);
 
-/* ---------- small helpers ---------- */
+/* ---------- helpers ---------- */
 const $ = (id) => document.getElementById(id);
-const val = (id) => String($(id)?.value ?? "").trim();           // never throws on undefined
+const val = (id) => String($(id)?.value ?? "").trim();
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const pub = createPublicClient({ chain: celo, transport: http("https://forno.celo.org") });
-let wallet, account, resolved = null;
+let wallet, account, resolved = null, amt = "", currentJob = null, lastScreen = "home";
 const short = (a) => `${a.slice(0, 6)}…${a.slice(-4)}`;
 const usd = (v) => Number(formatUnits(v, 6)).toLocaleString(undefined, { maximumFractionDigits: 2 });
 class UserError extends Error {}
 const fail = (m) => { throw new UserError(m); };
 
+/* ---------- screens ---------- */
+const history = [];
+function go(name, push = true) {
+  const cur = document.querySelector(".screen.on")?.id.slice(2);
+  if (push && cur && cur !== name) history.push(cur);
+  document.querySelectorAll(".screen").forEach((s) => s.classList.toggle("on", s.id === "s-" + name));
+  window.scrollTo({ top: 0 });
+}
+document.addEventListener("click", (e) => { if (e.target.closest("[data-back]")) { go(history.pop() || "home", false); } });
+
+/* ---------- messages ---------- */
+function say(text, kind = "") { const m = $("msg"); m.className = "msg show " + kind; m.textContent = text; if (kind === "ok") setTimeout(() => m.classList.remove("show"), 9000); }
+const hush = () => $("msg").classList.remove("show");
+const friendly = (e) => {
+  if (e instanceof UserError) return e.message;
+  const t = e?.shortMessage || e?.message || String(e);
+  if (/User rejected|denied/i.test(t)) return "You cancelled the request in your wallet.";
+  if (/insufficient funds|exceeds balance|transfer amount exceeds/i.test(t)) return "Not enough dollars (or gas) in this wallet.";
+  return "Something went wrong: " + t;
+};
+function confetti() { const c = $("confetti"); c.innerHTML = ""; for (let i = 0; i < 24; i++) { const s = document.createElement("span"); s.textContent = ["🎉", "💸", "✨", "🟡", "✅"][i % 5]; s.style.left = Math.random() * 100 + "%"; s.style.animationDelay = Math.random() * 0.6 + "s"; c.appendChild(s); } setTimeout(() => (c.innerHTML = ""), 3500); }
+
 /* ---------- currency ---------- */
 const CURRENCIES = { USD: 1, NGN: 1365, GBP: 0.76, EUR: 0.91, CAD: 1.42, GHS: 11.9, KES: 130, ZAR: 17.5, INR: 92, AUD: 1.5, AED: 3.67, PHP: 63.8, BRL: 5.8, MXN: 19.7, XOF: 598, UGX: 4230, TZS: 2680, EGP: 54.8 };
-const REGION = { NG: "NGN", GH: "GHS", KE: "KES", ZA: "ZAR", UG: "UGX", TZ: "TZS", GB: "GBP", US: "USD", CA: "CAD", AU: "AUD", IN: "INR", EG: "EGP", AE: "AED", PH: "PHP", BR: "BRL", MX: "MXN",
-  SN: "XOF", CI: "XOF", FR: "EUR", DE: "EUR", IT: "EUR", ES: "EUR", NL: "EUR", IE: "EUR", PT: "EUR", BE: "EUR", AT: "EUR", FI: "EUR", GR: "EUR" };
+const REGION = { NG: "NGN", GH: "GHS", KE: "KES", ZA: "ZAR", UG: "UGX", TZ: "TZS", GB: "GBP", US: "USD", CA: "CAD", AU: "AUD", IN: "INR", EG: "EGP", AE: "AED", PH: "PHP", BR: "BRL", MX: "MXN", SN: "XOF", CI: "XOF", FR: "EUR", DE: "EUR", IT: "EUR", ES: "EUR", NL: "EUR", IE: "EUR", PT: "EUR", BE: "EUR", AT: "EUR", FI: "EUR", GR: "EUR" };
 const TZ = { "Africa/Lagos": "NGN", "Africa/Accra": "GHS", "Africa/Nairobi": "KES", "Africa/Johannesburg": "ZAR", "Africa/Kampala": "UGX", "Africa/Dar_es_Salaam": "TZS", "Europe/London": "GBP", "America/Toronto": "CAD", "Australia/Sydney": "AUD", "Asia/Kolkata": "INR", "Africa/Cairo": "EGP", "Asia/Dubai": "AED" };
 let rates = { ...CURRENCIES };
 function detectCurrency() {
@@ -211,68 +281,61 @@ function detectCurrency() {
   return TZ[Intl.DateTimeFormat().resolvedOptions().timeZone] || "USD";
 }
 let cur = detectCurrency();
-const fmtCur = (n, c = cur) => new Intl.NumberFormat(undefined, { style: "currency", currency: c, currencyDisplay: "narrowSymbol", maximumFractionDigits: Math.abs(n) >= 1000 || ["NGN", "UGX", "TZS", "XOF"].includes(c) ? 0 : 2 }).format(n);
+const noDec = (c) => ["NGN", "UGX", "TZS", "XOF"].includes(c);
+const fmtCur = (n, c = cur) => new Intl.NumberFormat(undefined, { style: "currency", currency: c, currencyDisplay: "narrowSymbol", maximumFractionDigits: Math.abs(n) >= 1000 || noDec(c) ? 0 : 2 }).format(n);
+const symbol = () => new Intl.NumberFormat(undefined, { style: "currency", currency: cur, currencyDisplay: "narrowSymbol" }).formatToParts(0).find((p) => p.type === "currency")?.value || cur;
 const money = (units) => fmtCur((Number(units) / 1e6) * rates[cur]);
-const niceRound = (x) => { const m = 10 ** Math.floor(Math.log10(x)); return [1, 2, 2.5, 5, 7.5, 10].map((k) => k * m).reduce((a, b) => (Math.abs(b - x) < Math.abs(a - x) ? b : a)); };
-const toUsdUnits = (localNum) => BigInt(Math.round((localNum / rates[cur]) * 1e6));
+const niceRound = (x) => { const m = 10 ** Math.floor(Math.log10(x)); return [1, 2, 5, 10].map((k) => k * m).reduce((a, b) => (Math.abs(b - x) < Math.abs(a - x) ? b : a)); };
+const toUsdUnits = (n) => BigInt(Math.round((n / rates[cur]) * 1e6));
 
 function renderCurrency() {
   $("cur").innerHTML = Object.keys(CURRENCIES).map((c) => `<option value="${c}"${c === cur ? " selected" : ""}>${c}</option>`).join("");
-  $("amountlabel").textContent = `Amount (${cur})`;
-  $("chips").innerHTML = [5, 10, 25, 50, 100].map((u) => { const v = cur === "USD" ? u : niceRound(u * rates[cur]); return `<fluent-button size="small" data-v="${v}">${fmtCur(v)}</fluent-button>`; }).join("");
-  if (!val("amount")) { const first = $("chips").querySelector("fluent-button"); if (first) $("amount").value = first.dataset.v; }
-  estimate(); if (account) refreshBalance(); if (!$("p-jobs").classList.contains("hide")) loadJobs();
+  $("chips").innerHTML = [5, 10, 25, 50].map((u) => { const v = cur === "USD" ? u : niceRound(u * rates[cur]); return `<button class="pill" data-v="${v}">${esc(fmtCur(v))}</button>`; }).join("");
+  showAmt(); if (account) refreshBalance();
 }
-$("cur").onchange = () => { cur = $("cur").value; localStorage.setItem("cur", cur); $("amount").value = ""; renderCurrency(); };
-fetch("https://open.er-api.com/v6/latest/USD").then((r) => r.json()).then((d) => {
-  if (d?.rates) { for (const c of Object.keys(CURRENCIES)) if (d.rates[c]) rates[c] = d.rates[c]; renderCurrency(); }
-}).catch(() => { /* keep the built-in indicative rates */ });
+$("cur").onchange = () => { cur = $("cur").value; localStorage.setItem("cur", cur); amt = ""; renderCurrency(); loadJobs(); };
+fetch("https://open.er-api.com/v6/latest/USD").then((r) => r.json()).then((d) => { if (d?.rates) { for (const c of Object.keys(CURRENCIES)) if (d.rates[c]) rates[c] = d.rates[c]; renderCurrency(); loadJobs(); } }).catch(() => {});
 
-/* ---------- messages ---------- */
-function say(text, intent = "info") {
-  const m = $("msg"); m.setAttribute("intent", intent); $("msgtext").textContent = text; m.classList.add("show");
-  if (intent === "success") setTimeout(() => m.classList.remove("show"), 12000);
+/* ---------- keypad + amount ---------- */
+$("keys").innerHTML = ["1","2","3","4","5","6","7","8","9",".","0","⌫"].map((k) => `<button data-k="${k}">${k}</button>`).join("");
+function showAmt() {
+  const [i, d] = amt.split(".");
+  const grouped = i ? Number(i).toLocaleString() : "";
+  const body = amt === "" ? '<span class="ph">0</span>' : esc(grouped + (d !== undefined ? "." + d : ""));
+  $("amtshow").innerHTML = `${esc(symbol())}${body}`;
+  const u = amountUnits();
+  $("amtsub").textContent = u ? `You pay about $${usd(u)} in dollars (USD₮)` : "";
 }
-const friendly = (e) => {
-  if (e instanceof UserError) return e.message;
-  const t = e?.shortMessage || e?.message || String(e);
-  if (/User rejected|denied/i.test(t)) return "You cancelled the request in your wallet.";
-  if (/insufficient funds|exceeds balance|transfer amount exceeds/i.test(t)) return "Not enough USD₮ (or gas) in this wallet.";
-  return "Something went wrong: " + t;
-};
-
-/* ---------- tabs ---------- */
-function tab(name) {
-  for (const k of ["pay", "earn", "jobs"]) {
-    $("p-" + k).classList.toggle("hide", k !== name);
-    $("t-" + k).setAttribute("appearance", k === name ? "primary" : "subtle");
-  }
-  if (name === "jobs") loadJobs();
-}
-$("t-pay").onclick = () => tab("pay"); $("t-earn").onclick = () => tab("earn"); $("t-jobs").onclick = () => tab("jobs");
+function amountUnits() { const n = Number(amt); return Number.isFinite(n) && n > 0 ? toUsdUnits(n) : null; }
+$("keys").addEventListener("click", (e) => {
+  const k = e.target.closest("button")?.dataset.k; if (!k) return;
+  if (k === "⌫") amt = amt.slice(0, -1);
+  else if (k === ".") { if (!amt.includes(".") && !noDec(cur)) amt = (amt || "0") + "."; }
+  else { if (amt.replace(".", "").length >= 9) return; if (amt.includes(".") && amt.split(".")[1].length >= 2) return; amt = amt === "0" ? k : amt + k; }
+  showAmt();
+});
+$("chips").addEventListener("click", (e) => { const v = e.target.closest("button")?.dataset.v; if (v) { amt = String(v); showAmt(); } });
 
 /* ---------- wallet ---------- */
-async function refreshBalance() {
-  const bal = await pub.readContract({ address: USDT, abi: erc20, functionName: "balanceOf", args: [account] });
-  $("connect").textContent = `${short(account)} · ${money(bal)}`;
+async function refreshBalance() { const bal = await pub.readContract({ address: USDT, abi: erc20, functionName: "balanceOf", args: [account] }); $("wallet").textContent = money(bal); }
+async function setAccount(addr) {
+  account = getAddress(addr);
+  wallet = createWalletClient({ account, chain: celo, transport: custom(window.ethereum) }).extend(withAttribution(TAG));
+  refreshBalance().catch(() => ($("wallet").textContent = short(account))); loadJobs(); showMe();
 }
 async function connect() {
   if (account) return true;
-  if (!window.ethereum) { say("No wallet found. Open this page in MiniPay or a browser with MetaMask.", "error"); return false; }
+  if (!window.ethereum) { say("You need a wallet app to use this. Open this page in MiniPay, or install MetaMask.", "warn"); return false; }
   const [addr] = await window.ethereum.request({ method: "eth_requestAccounts" });
-  try { await window.ethereum.request({ method: "wallet_switchEthereumChain", params: [{ chainId: "0xa4ec" }] }); } catch { /* MiniPay is already on Celo */ }
-  account = getAddress(addr);
-  wallet = createWalletClient({ account, chain: celo, transport: custom(window.ethereum) }).extend(withAttribution(TAG));
-  $("connect").setAttribute("appearance", "outline");
-  await refreshBalance(); showMe(); return true;
+  try { await window.ethereum.request({ method: "wallet_switchEthereumChain", params: [{ chainId: "0xa4ec" }] }); } catch {}
+  await setAccount(addr); return true;
 }
-$("connect").onclick = () => guard("Connecting", async () => { await connect(); });
-
-async function guard(label, fn, btn) {
-  if (btn) btn.setAttribute("disabled", "");
-  try { if (!(await connect())) return; say(`${label}…`); await fn(); }
-  catch (e) { say(friendly(e), "error"); }
-  finally { if (btn) btn.removeAttribute("disabled"); }
+$("wallet").onclick = () => run("Connecting", async () => { await connect(); });
+async function run(label, fn, btn) {
+  const old = btn?.textContent; if (btn) { btn.disabled = true; }
+  try { if (!(await connect())) return; say(label + "…"); await fn(); }
+  catch (e) { say(friendly(e), "err"); }
+  finally { if (btn) { btn.disabled = false; if (old) btn.textContent = old; } }
 }
 async function send(address, abi, functionName, args) {
   const hash = await wallet.writeContract({ address, abi, functionName, args });
@@ -281,182 +344,192 @@ async function send(address, abi, functionName, args) {
   if (receipt.status !== "success") fail("The transaction failed.");
   return { hash, receipt };
 }
+if (window.ethereum) window.ethereum.request({ method: "eth_accounts" }).then((a) => { if (a?.[0]) setAccount(a[0]); }).catch(() => {});
 
-/* ---------- recipient lookup ---------- */
+/* ---------- recipient ---------- */
 async function resolveWho() {
-  const raw = val("freelancer").replace(/^@/, "");
-  resolved = null; $("confirmRow").classList.add("hide"); if ($("confirm")) $("confirm").checked = false;
+  const raw = val("to").replace(/^@/, ""); resolved = null;
   const box = $("who"); box.className = "who"; box.style.display = raw ? "flex" : "none";
   if (!raw) return;
-  const set = (cls, title, sub, name) => { box.className = "who " + cls; $("whot").textContent = title; $("whos").textContent = sub; $("whoav").setAttribute("name", name || "?"); };
+  const set = (cls, title, sub, name) => { box.className = "who " + cls; box.style.display = "flex"; $("whot").textContent = title; $("whos").textContent = sub; $("whoav").setAttribute("name", name || "?"); };
+  set("warn", "Looking up…", "One moment", "?");
   try {
     if (isAddress(raw)) {
       const p = await pub.readContract({ address: REGISTRY, abi: regAbi, functionName: "profiles", args: [getAddress(raw)] });
       resolved = { address: getAddress(raw), name: p[1], handle: p[0] };
-      if (p[1]) { set("", p[1], `@${p[0]} · ${short(raw)}`, p[1]); $("confirmRow").classList.remove("hide"); }
-      else set("warn", "No name registered for this wallet", "Double-check the address with the freelancer before paying.", "?");
+      if (p[1]) set("", p[1], `@${p[0]} · ${short(raw)}`, p[1]); else set("warn", "No name registered for this wallet", "Double-check the address with them before paying.", "?");
     } else if (/^[a-z0-9_]{3,24}$/i.test(raw)) {
       const [owner, name] = await pub.readContract({ address: REGISTRY, abi: regAbi, functionName: "resolve", args: [raw.toLowerCase()] });
-      if (/^0x0+$/.test(owner)) { set("bad", "No one has that pay name", "Check the spelling with the freelancer.", "?"); return; }
+      if (/^0x0+$/.test(owner)) { set("bad", "No one has that pay name", "Check the spelling with them.", "?"); return; }
       resolved = { address: owner, name, handle: raw.toLowerCase() };
-      set("", name, `@${raw.toLowerCase()} · ${short(owner)}`, name); $("confirmRow").classList.remove("hide");
-    } else set("bad", "That doesn't look right", "Use a pay name like @dee_web.", "?");
+      set("", name, `@${raw.toLowerCase()} · ${short(owner)}`, name);
+    } else set("bad", "That doesn’t look right", "Use a pay name like @dee_web.", "?");
   } catch { set("bad", "Could not look that up", "Check your connection and try again.", "?"); }
 }
-let rt; $("freelancer").addEventListener("input", () => { clearTimeout(rt); rt = setTimeout(resolveWho, 350); });
+let rt; $("to").addEventListener("input", () => { clearTimeout(rt); rt = setTimeout(resolveWho, 350); });
 
-/* ---------- amount + estimate ---------- */
-function amountUnits() {
-  const n = Number(val("amount").replace(/[, ]/g, ""));
-  if (!Number.isFinite(n) || n <= 0) return null;
-  return toUsdUnits(n);
+/* ---------- send flow ---------- */
+function estimateParts(units) {
+  const fee = units / 100n, net = units - fee;
+  return { fee, net, ngn: (Number(net) / 1e6) * rates.NGN };
 }
-function estimate() {
-  const el = $("est"), units = amountUnits();
-  if (units === null) { el.textContent = `Enter an amount in ${cur}.`; return; }
-  const net = (units * 99n) / 100n;
-  const payLine = `You pay about <b>$${usd(units)} USD₮</b>. `;
-  if ($("naira").checked && units < MIN_NAIRA) { el.innerHTML = `${payLine}Naira payouts start at about $1.02. Raise the amount or switch naira off.`; return; }
-  if ($("naira").checked) el.innerHTML = `${payLine}The freelancer receives about <b>${fmtCur((Number(net) / 1e6) * rates.NGN, "NGN")}</b> in naira (indicative rate, final rate is live at payout, 1% fee included).`;
-  else el.innerHTML = `${payLine}The freelancer receives about <b>$${usd(net)} USD₮</b> after the 1% fee.`;
+$("goSend").onclick = () => { hush(); go("send"); };
+$("toReview").onclick = async () => {
+  try {
+    await resolveWho();
+    if (!val("to")) fail("Enter who you are paying, like @dee_web.");
+    if (!resolved) fail("We couldn’t find that person. Check their pay name.");
+    const units = amountUnits(); if (!units) fail(`Enter an amount in ${cur}.`);
+    if (units < 500_000n) fail("The smallest payment is about $0.50.");
+    if (val("note").length < 5) fail("Say what it’s for (a few words), so you both agree on the job.");
+    if (account && resolved.address.toLowerCase() === account.toLowerCase()) fail("You can’t pay yourself.");
+    hush(); fillReview(units); go("review");
+  } catch (e) { say(friendly(e), "err"); }
+};
+function fillReview(units) {
+  const { fee, net, ngn } = estimateParts(units);
+  const naira = $("naira").checked;
+  $("rvav").setAttribute("name", resolved.name || "?");
+  $("rvname").textContent = resolved.name || short(resolved.address);
+  $("rvhandle").textContent = resolved.handle ? "@" + resolved.handle : short(resolved.address);
+  $("rvamt").textContent = money(units);
+  $("rvget").textContent = naira ? `about ${fmtCur(ngn, "NGN")}` : `$${usd(net)} USD₮`;
+  $("rvfee").textContent = money(fee);
+  $("rvnote").textContent = val("note");
+  $("rvusd").textContent = `$${usd(units)} USD₮`;
+  if (naira && units < MIN_NAIRA) say("Naira payouts start at about $1.02. Raise the amount or untick naira.", "warn"); else hush();
 }
-let et; $("amount").addEventListener("input", () => { clearTimeout(et); et = setTimeout(estimate, 250); });
-$("naira").addEventListener("change", estimate);
-$("chips").addEventListener("click", (e) => { const v = e.target.closest("fluent-button")?.dataset.v; if (v) { $("amount").value = v; estimate(); } });
-
-/* ---------- fund ---------- */
-$("fund").onclick = () => guard("Preparing payment", async () => {
-  await resolveWho();
-  if (!val("freelancer")) fail("Enter who you are paying, like @dee_web.");
-  if (!resolved) fail("We couldn't find that person. Check the pay name.");
-  if (resolved.name && !$("confirm").checked) fail(`Tick the box to confirm you are paying ${resolved.name}.`);
-  if (resolved.address.toLowerCase() === account.toLowerCase()) fail("You can't pay yourself.");
-  const amount = amountUnits();
-  if (amount === null) fail(`Enter an amount in ${cur}.`);
-  if (amount < 500_000n) fail("The smallest job is about $0.50.");
-  if ($("naira").checked && amount < MIN_NAIRA) fail("Naira payouts need at least about $1.02. Raise the amount or switch naira off.");
-  const brief = val("brief");
-  if (brief.length < 5) fail("Describe what is being delivered (a few words at least) so both sides agree on the job.");
+$("naira").onchange = () => { const u = amountUnits(); if (u) fillReview(u); };
+$("pay").onclick = () => run("Preparing payment", async () => {
+  const units = amountUnits(); if (!units || !resolved) fail("Go back and check the details.");
+  if ($("naira").checked && units < MIN_NAIRA) fail("Naira payouts need at least about $1.02. Raise the amount or untick naira.");
   const days = Number(val("days")), hours = Number(val("review"));
-  if (!Number.isInteger(days) || days < 1 || days > 90) fail("Delivery time must be a whole number of days, between 1 and 90.");
-  if (!Number.isInteger(hours) || hours < 1 || hours > 336) fail("Review time must be a whole number of hours, between 1 and 336.");
+  if (!Number.isInteger(days) || days < 1 || days > 90) fail("Due date must be a whole number of days, 1 to 90.");
+  if (!Number.isInteger(hours) || hours < 1 || hours > 336) fail("Check time must be a whole number of hours, 1 to 336.");
   const bal = await pub.readContract({ address: USDT, abi: erc20, functionName: "balanceOf", args: [account] });
-  if (bal < amount) fail(`Your wallet has ${money(bal)} in USD₮ on Celo, which is less than the ${money(amount)} you're trying to pay.`);
-
-  const deliverBy = Math.floor(Date.now() / 1000) + days * 86400;
+  if (bal < units) fail(`Your wallet has ${money(bal)} in dollars on Celo, which is less than the ${money(units)} you’re paying.`);
+  const note = val("note");
   const allowance = await pub.readContract({ address: USDT, abi: erc20, functionName: "allowance", args: [account, ESCROW] });
-  if (allowance < amount) {
+  if (allowance < units) {
     say("Step 1 of 2: allow the app to hold your dollars safely. Confirm in your wallet…");
-    const h = await wallet.writeContract({ address: USDT, abi: erc20, functionName: "approve", args: [ESCROW, amount] });
+    const h = await wallet.writeContract({ address: USDT, abi: erc20, functionName: "approve", args: [ESCROW, units] });
     await pub.waitForTransactionReceipt({ hash: h });
   }
   say("Step 2 of 2: sending your payment. Confirm in your wallet…");
-  const { receipt } = await send(ESCROW, escrowAbi, "fund", [resolved.address, amount, deliverBy, hours * 3600, $("naira").checked, keccak256(toHex(brief))]);
+  const deliverBy = Math.floor(Date.now() / 1000) + days * 86400;
+  const { receipt } = await send(ESCROW, escrowAbi, "fund", [resolved.address, units, deliverBy, hours * 3600, $("naira").checked, keccak256(toHex(note))]);
   const [ev] = parseEventLogs({ abi: escrowAbi, eventName: "JobFunded", logs: receipt.logs });
-  localStorage.setItem(`brief:${ev.args.id}`, brief);
-  say(`Done. ${money(amount)} is held safely for ${resolved.name || short(resolved.address)}. They'll see it under "My jobs".`, "success");
-  refreshBalance(); tab("jobs");
-}, $("fund"));
+  localStorage.setItem(`brief:${ev.args.id}`, note);
+  currentJob = ev.args.id; hush();
+  $("doneText").textContent = `${money(units)} is held safely for ${resolved.name || short(resolved.address)}. It’s only paid out when you approve.`;
+  amt = ""; showAmt(); $("note").value = ""; $("to").value = ""; resolved = null; $("who").style.display = "none";
+  history.length = 0; go("done", false); confetti(); refreshBalance(); loadJobs();
+}, $("pay"));
+$("doneJob").onclick = () => openJob(currentJob);
+$("doneHome").onclick = () => { history.length = 0; go("home", false); };
 
-/* ---------- handle ---------- */
+/* ---------- pay name + share ---------- */
 async function showMe() {
   if (!account) return;
   const p = await pub.readContract({ address: REGISTRY, abi: regAbi, functionName: "profiles", args: [account] });
-  if (p[0]) {
-    const link = `${location.origin}${location.pathname}?to=${p[0]}`;
-    const text = encodeURIComponent(`Pay me through this escrow, no marketplace fees: ${link}`);
-    $("claim").classList.add("hide");
-    $("me").innerHTML = `<div class="who" style="display:flex"><fluent-avatar size="40" name="${esc(p[1])}"></fluent-avatar><div><div class="t">${esc(p[1])}</div><div class="s">@${esc(p[0])}</div></div></div>
-      <p style="margin:12px 0 0">Send this link to your client:</p><div class="link">${esc(link)}</div>
-      <div class="actions"><fluent-button id="copy" appearance="primary">Copy link</fluent-button><fluent-button id="wa">Share on WhatsApp</fluent-button></div>`;
-    $("copy").onclick = async () => { try { await navigator.clipboard.writeText(link); say("Link copied.", "success"); } catch { say("Copy failed. Select the link and copy it manually.", "error"); } };
-    $("wa").onclick = () => window.open(`https://wa.me/?text=${text}`, "_blank");
-  } else { $("me").innerHTML = ""; $("claim").classList.remove("hide"); }
+  if (!p[0]) { $("earnClaim").classList.remove("hide"); $("earnShare").classList.add("hide"); return; }
+  const link = `${location.origin}${location.pathname}?to=${p[0]}`;
+  $("earnClaim").classList.add("hide"); $("earnShare").classList.remove("hide");
+  $("meav").setAttribute("name", p[1]); $("mename").textContent = p[1]; $("mehandle").textContent = "@" + p[0]; $("plink").textContent = link;
+  $("copy").onclick = async () => { try { await navigator.clipboard.writeText(link); say("Link copied.", "ok"); } catch { say("Couldn’t copy. Select the link and copy it.", "warn"); } };
+  $("wa").onclick = () => window.open(`https://wa.me/?text=${encodeURIComponent(`Pay me safely through Safe Pay, no marketplace fees: ${link}`)}`, "_blank");
+  import("https://esm.sh/qrcode@1.5.4").then((m) => (m.default || m).toDataURL(link, { margin: 1, width: 336 })).then((u) => { $("qr").src = u; $("qr").classList.remove("hide"); }).catch(() => {});
 }
-$("reg").onclick = () => guard("Claiming your pay name", async () => {
+$("goEarn").onclick = () => run("Loading", async () => { hush(); await showMe(); go("earn"); });
+$("claimBtn").onclick = () => run("Claiming your pay name", async () => {
   const handle = val("handle").replace(/^@/, "").toLowerCase(), name = val("myname").replace(/\s+/g, " ");
   if (!/^[a-z0-9_]{3,24}$/.test(handle)) fail("A pay name is 3 to 24 characters: lowercase letters, numbers and underscore only (like dee_web).");
-  if (name.length < 2 || name.length > 60) fail("Enter your name (2 to 60 characters) so clients can confirm it's you.");
+  if (name.length < 2 || name.length > 60) fail("Enter your name (2 to 60 characters) so clients know it’s you.");
   const [owner] = await pub.readContract({ address: REGISTRY, abi: regAbi, functionName: "resolve", args: [handle] });
-  if (!/^0x0+$/.test(owner)) fail("That pay name is already taken. Try another.");
+  if (!/^0x0+$/.test(owner)) fail("That pay name is taken. Try another.");
   await send(REGISTRY, regAbi, "register", [handle, name]);
-  await showMe(); say(`@${handle} is yours. Send your link to your client.`, "success");
-}, $("reg"));
+  await showMe(); say(`@${handle} is yours. Send your link to your client.`, "ok"); confetti();
+}, $("claimBtn"));
 
 /* ---------- jobs ---------- */
-const STATUS = {
-  1: ["Waiting for delivery", "informative"], 2: ["In review", "warning"], 3: ["Dispute open", "danger"], 4: ["Converting to naira", "brand"],
-  5: ["Converting to naira", "brand"], 6: ["Paid in naira", "success"], 7: ["Paid in USD₮", "success"], 8: ["Refunded", "subtle"],
-};
+const STEP = { 1: 1, 2: 2, 3: 2, 4: 3, 5: 3, 6: 4, 7: 4, 8: 0 };
+const LABEL = { 1: ["⏳", "Waiting for the work"], 2: ["🔍", "Being checked"], 3: ["⚖️", "Dispute open"], 4: ["💱", "Paying in naira…"], 5: ["💱", "Paying in naira…"], 6: ["✅", "Paid in naira"], 7: ["✅", "Paid in dollars"], 8: ["↩️", "Refunded"] };
+const nameCache = {};
 async function nameOf(addr) {
-  try { const p = await pub.readContract({ address: REGISTRY, abi: regAbi, functionName: "profiles", args: [addr] }); return p[1] || short(addr); } catch { return short(addr); }
+  if (nameCache[addr]) return nameCache[addr];
+  try { const p = await pub.readContract({ address: REGISTRY, abi: regAbi, functionName: "profiles", args: [addr] }); return (nameCache[addr] = p[1] || short(addr)); } catch { return short(addr); }
+}
+async function fetchJobs() {
+  const [a, b] = await Promise.all([
+    pub.getLogs({ address: ESCROW, event: fundedEvent, args: { client: account }, fromBlock: FROM_BLOCK }),
+    pub.getLogs({ address: ESCROW, event: fundedEvent, args: { freelancer: account }, fromBlock: FROM_BLOCK }),
+  ]);
+  return [...new Set([...a, ...b].map((l) => l.args.id))].sort((x, y) => (x < y ? 1 : -1));
 }
 async function loadJobs() {
   const box = $("jobs");
-  if (!account) { box.innerHTML = '<div class="empty">Connect your wallet to see your jobs.</div>'; return; }
-  box.innerHTML = '<div class="empty"><fluent-spinner></fluent-spinner></div>';
+  if (!account) { box.innerHTML = '<div class="empty">Connect to see your payments.</div>'; return; }
   try {
-    const [a, b] = await Promise.all([
-      pub.getLogs({ address: ESCROW, event: fundedEvent, args: { client: account }, fromBlock: FROM_BLOCK }),
-      pub.getLogs({ address: ESCROW, event: fundedEvent, args: { freelancer: account }, fromBlock: FROM_BLOCK }),
-    ]);
-    const ids = [...new Set([...a, ...b].map((l) => l.args.id))].sort((x, y) => (x < y ? 1 : -1));
-    if (!ids.length) { box.innerHTML = '<div class="empty">No jobs yet. Pay a freelancer, or share your pay link to get your first job.</div>'; return; }
-    const now = Math.floor(Date.now() / 1000), cards = [];
+    const ids = await fetchJobs();
+    if (!ids.length) { box.innerHTML = '<div class="empty">Nothing yet. Send a payment, or share your pay link to get your first job. 👋</div>'; return; }
+    const rows = [];
     for (const id of ids) {
-      const j = await pub.readContract({ address: ESCROW, abi: escrowAbi, functionName: "jobs", args: [id] });
-      const [client, freelancer, amount, deliverBy, review, deliveredAt, , releasingAt, status] = j;
+      const [client, freelancer, amount, , , , , , status] = await pub.readContract({ address: ESCROW, abi: escrowAbi, functionName: "jobs", args: [id] });
       const isClient = client.toLowerCase() === account.toLowerCase();
       const other = await nameOf(isClient ? freelancer : client);
-      const [label, tone] = STATUS[status] || ["Unknown", "subtle"];
-      const brief = localStorage.getItem(`brief:${id}`) || "";
-      let hint = "", btns = "";
-      if (status === 1) {
-        if (isClient) { hint = `Waiting for ${esc(other)} to deliver (due ${new Date(Number(deliverBy) * 1000).toLocaleDateString()}).`;
-          if (now > Number(deliverBy) + 3 * 86400) btns = `<fluent-button data-act="refund" data-id="${id}">Refund me</fluent-button>`; }
-        else { hint = "Do the work, then mark it delivered with a link to the result.";
-          btns = `<input id="ev-${id}" placeholder="Link to your work (https://…)" /><fluent-button appearance="primary" data-act="deliver" data-id="${id}">Mark as delivered</fluent-button>`; }
-      } else if (status === 2) {
-        const ends = Number(deliveredAt) + Number(review);
-        if (isClient) { hint = `Review the work. If you do nothing, payment releases automatically ${new Date(ends * 1000).toLocaleString()}.`;
-          btns = `<fluent-button appearance="primary" data-act="approve" data-id="${id}">Approve and pay</fluent-button><input id="dr-${id}" placeholder="Reason, if disputing" /><fluent-button data-act="dispute" data-id="${id}">Dispute</fluent-button>`; }
-        else { hint = `Delivered. ${esc(other)} is reviewing until ${new Date(ends * 1000).toLocaleString()}.`;
-          if (now >= ends) btns = `<fluent-button appearance="primary" data-act="release" data-id="${id}">Release payment</fluent-button>`; }
-      } else if (status === 3) hint = "Our agent is reviewing both sides and will decide.";
-      else if (status === 4 || status === 5) {
-        hint = "Converting to naira on Textile FX. This takes a minute or two.";
-        if (!isClient && status === 4 && now > Number(releasingAt) + 3600) btns = `<fluent-button data-act="claim" data-id="${id}">Take USD₮ instead</fluent-button>`;
-      } else if (status === 6) hint = isClient ? `${esc(other)} was paid in naira.` : "Your naira has been sent to your wallet.";
-      else if (status === 7) hint = isClient ? `${esc(other)} was paid in USD₮.` : "Paid to your wallet in USD₮.";
-      cards.push(`<div class="job"><div class="top"><div><div class="amt">${esc(money(amount))}</div><div class="meta">${isClient ? "You pay" : "You receive from"} ${esc(other)} · job #${id} · $${usd(amount)} USD₮</div></div>
-        <fluent-badge appearance="tint" color="${tone}">${label}</fluent-badge></div>
-        ${brief ? `<div class="meta">“${esc(brief)}”</div>` : ""}<div class="meta">${hint}</div>${btns ? `<div class="btns">${btns}</div>` : ""}</div>`);
+      const [ic, lab] = LABEL[status] || ["•", ""];
+      rows.push(`<button class="job" data-job="${id}"><span style="font-size:30px">${ic}</span><span class="m"><div class="n">${isClient ? "To" : "From"} ${esc(other)}</div><div class="st">${esc(lab)}</div></span><span class="a" style="color:${isClient ? "inherit" : "var(--green)"}">${isClient ? "−" : "+"}${esc(money(amount))}</span></button>`);
     }
-    box.innerHTML = cards.join("");
-  } catch (e) { box.innerHTML = `<div class="empty">Could not load jobs. ${esc(friendly(e))}</div>`; }
+    box.innerHTML = rows.join("");
+  } catch (e) { box.innerHTML = `<div class="empty">Couldn’t load your payments. ${esc(friendly(e))}</div>`; }
 }
-$("refresh").onclick = loadJobs;
-$("jobs").addEventListener("click", (e) => {
-  const b = e.target.closest("fluent-button[data-act]"); if (!b) return;
-  const id = BigInt(b.dataset.id), act = b.dataset.act;
-  const field = (p) => String(document.getElementById(`${p}-${id}`)?.value ?? "").trim();
+$("jobs").addEventListener("click", (e) => { const id = e.target.closest("[data-job]")?.dataset.job; if (id) openJob(BigInt(id)); });
+
+async function openJob(id) {
+  currentJob = id; go("job"); const v = $("jobview"); v.innerHTML = '<div class="empty">Loading…</div>';
+  try {
+    const [client, freelancer, amount, deliverBy, review, deliveredAt, , releasingAt, status] = await pub.readContract({ address: ESCROW, abi: escrowAbi, functionName: "jobs", args: [id] });
+    const isClient = account && client.toLowerCase() === account.toLowerCase();
+    const other = await nameOf(isClient ? freelancer : client);
+    const now = Math.floor(Date.now() / 1000), note = localStorage.getItem(`brief:${id}`) || "";
+    const step = STEP[status] ?? 0, dt = (t) => new Date(Number(t) * 1000).toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
+    let hint = "", acts = "";
+    if (status === 1) {
+      if (isClient) { hint = `Waiting for ${other} to finish. Due ${dt(deliverBy)}.`; if (now > Number(deliverBy) + 3 * 86400) acts = `<button class="cta" data-act="refund">Refund me</button>`; }
+      else { hint = "Do the work, then tell them it’s done and share a link to it."; acts = `<input id="ev" class="inp" placeholder="Link to your work (https://…)" style="margin-bottom:10px" /><button class="cta green" data-act="deliver">I’ve finished the work</button>`; }
+    } else if (status === 2) {
+      const ends = Number(deliveredAt) + Number(review);
+      if (isClient) { hint = `${other} says it’s done. Check it. If you do nothing, they’re paid on ${dt(ends)}.`; acts = `<button class="cta green" data-act="approve">Looks good, pay them</button><input id="dr" class="inp" placeholder="Not right? Say what’s wrong" style="margin:12px 0 10px" /><button class="cta ghost" data-act="dispute">Open a dispute</button>`; }
+      else { hint = `Done! ${other} is checking it until ${dt(ends)}.`; if (now >= ends) acts = `<button class="cta green" data-act="release">Collect my payment</button>`; }
+    } else if (status === 3) hint = "A dispute is open. Our agent will look at both sides and decide.";
+    else if (status === 4 || status === 5) { hint = "Turning dollars into naira. This takes a minute or two."; if (!isClient && status === 4 && now > Number(releasingAt) + 3600) acts = `<button class="cta ghost" data-act="claim">Take dollars instead</button>`; }
+    else if (status === 6) hint = isClient ? `${other} has been paid in naira. All done 🎉` : "Your naira has been sent to your wallet 🎉";
+    else if (status === 7) hint = isClient ? `${other} has been paid in dollars. All done 🎉` : "Paid to your wallet in dollars 🎉";
+    else if (status === 8) hint = "This payment was refunded.";
+    const steps = ["Paid and held safely", "Work finished", "You approve", "They’re paid"];
+    const tl = steps.map((s, i) => { const n = i + 1, cls = step >= n + (n === 4 ? 0 : 0) && n <= step ? (n === step && ![6, 7].includes(status) ? "now" : "done") : ""; return `<li class="${cls}"><span class="dot">${cls === "done" ? "✓" : n}</span>${esc(s)}</li>`; }).join("");
+    v.innerHTML = `<div class="card" style="text-align:center"><fluent-avatar size="56" name="${esc(other)}"></fluent-avatar><div class="txt" style="margin-top:6px">${isClient ? "You’re paying" : "You’ll get paid by"}</div><div style="font-weight:900;font-size:22px">${esc(other)}</div>
+      <div class="amount" style="min-height:0;padding:6px 0">${esc(money(amount))}</div>${note ? `<div class="txt">“${esc(note)}”</div>` : ""}</div>
+      <div class="card"><ul class="tl">${tl}</ul><p class="txt" style="margin:8px 0 0">${esc(hint)}</p></div>${acts ? `<div class="card">${acts}</div>` : ""}`;
+  } catch (e) { v.innerHTML = `<div class="empty">Couldn’t load this payment. ${esc(friendly(e))}</div>`; }
+}
+$("jobview").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-act]"); if (!b) return;
+  const id = currentJob, act = b.dataset.act, field = (x) => String(document.getElementById(x)?.value ?? "").trim();
   const map = {
-    deliver: ["markDelivered", () => { const v = field("ev"); if (!/^https?:\/\/\S{4,}$/i.test(v)) fail("Paste a link to your work that starts with https://"); return [id, v]; }, "Marking as delivered"],
-    approve: ["approve", () => [id], "Approving payment"],
-    dispute: ["dispute", () => { const v = field("dr"); if (v.length < 5) fail("Say briefly what's wrong (at least a few words) before disputing."); return [id, v]; }, "Opening dispute"],
-    release: ["autoRelease", () => [id], "Releasing payment"], claim: ["claimUsdt", () => [id], "Claiming your USD₮"], refund: ["refund", () => [id], "Refunding"],
+    deliver: ["markDelivered", () => { const v = field("ev"); if (!/^https?:\/\/\S{4,}$/i.test(v)) fail("Paste a link to your work that starts with https://"); return [id, v]; }, "Telling them it’s done"],
+    approve: ["approve", () => [id], "Paying them"],
+    dispute: ["dispute", () => { const v = field("dr"); if (v.length < 5) fail("Say briefly what’s wrong (a few words) before disputing."); return [id, v]; }, "Opening a dispute"],
+    release: ["autoRelease", () => [id], "Collecting your payment"], claim: ["claimUsdt", () => [id], "Switching to dollars"], refund: ["refund", () => [id], "Refunding you"],
   };
   const [fn, args, label] = map[act];
-  guard(label, async () => { const a = args(); await send(ESCROW, escrowAbi, fn, a); say("Done.", "success"); refreshBalance(); await loadJobs(); }, b);
+  run(label, async () => { const a = args(); await send(ESCROW, escrowAbi, fn, a); say("Done!", "ok"); if (act === "approve") confetti(); refreshBalance(); loadJobs(); await openJob(id); }, b);
 });
 
 /* ---------- start ---------- */
 const to = new URLSearchParams(location.search).get("to");
-if (to) { $("freelancer").value = "@" + to.replace(/[^a-z0-9_]/gi, ""); resolveWho(); }
-$("nairalabel").onclick = () => { $("naira").checked = !$("naira").checked; estimate(); };
-if (!window.ethereum) $("nowallet").classList.add("show");
 renderCurrency();
-setTimeout(renderCurrency, 700);
+if (to) { $("to").value = "@" + to.replace(/[^a-z0-9_]/gi, ""); resolveWho(); go("send", false); }
 </script>
 </body>
 </html>
