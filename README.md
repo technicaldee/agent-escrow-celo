@@ -59,7 +59,7 @@ npm run agent         # watches the contract and settles naira payouts
 - `contracts/DeliveryEscrow.sol`: the escrow
 - `contracts/HandleRegistry.sol`: public handles and display names
 - `src/`: the agent (`agent.ts` loop, `settle.ts` naira payout, `textile.ts` Textile RFQ client, `chain.ts` tagged wallet client)
-- `docs/index.html`: the web page for clients and freelancers (MiniPay and MetaMask)
+- `docs/index.html`: the web page for clients and freelancers (MiniPay and MetaMask), built with Fluent UI Web Components and Fluent Emoji (both MIT, Microsoft)
 - `test/`: contract tests
 
 ## Status and known limits
