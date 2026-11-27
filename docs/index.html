@@ -106,7 +106,6 @@
   <!-- HOME -->
   <section id="s-home" class="screen on">
     <div class="hero">
-      <img class="float" src="img/lock.png" alt="" />
       <h1>Pay anyone.<br/>Held until it’s done.</h1>
       <p>Your money waits in a safe until the work is done.</p>
     </div>
@@ -242,6 +241,7 @@ const MIN_NAIRA = 1_020_000n;
 
 const escrowAbi = parseAbi([
   "function fund(address freelancer,uint128 amount,uint40 deliverBy,uint40 reviewWindow,bool payNaira,bytes32 briefHash) returns (uint256)",
+  "function nextJobId() view returns (uint256)",
   "function approve(uint256 id)", "function dispute(uint256 id,string reasonURI)", "function markDelivered(uint256 id,string evidenceURI)",
   "function autoRelease(uint256 id)", "function claimUsdt(uint256 id)", "function refund(uint256 id)",
   "function jobs(uint256) view returns (address client,address freelancer,uint128 amount,uint40 deliverBy,uint40 reviewWindow,uint40 deliveredAt,uint40 disputedAt,uint40 releasingAt,uint8 status,bool payNaira,bytes32 briefHash,uint128 pendingNet)",
@@ -478,21 +478,23 @@ async function nameOf(addr) {
   try { const p = await pub.readContract({ address: REGISTRY, abi: regAbi, functionName: "profiles", args: [addr] }); return (nameCache[addr] = p[1] || short(addr)); } catch { return short(addr); }
 }
 async function fetchJobs() {
-  const [a, b] = await Promise.all([
-    pub.getLogs({ address: ESCROW, event: fundedEvent, args: { client: account }, fromBlock: FROM_BLOCK }),
-    pub.getLogs({ address: ESCROW, event: fundedEvent, args: { freelancer: account }, fromBlock: FROM_BLOCK }),
-  ]);
-  return [...new Set([...a, ...b].map((l) => l.args.id))].sort((x, y) => (x < y ? 1 : -1));
+  // Read jobs straight from the contract. (Log scans are capped at 5,000 blocks by public RPCs.)
+  const next = await pub.readContract({ address: ESCROW, abi: escrowAbi, functionName: "nextJobId" });
+  const first = next > 300n ? next - 300n : 1n, ids = [];
+  for (let id = next - 1n; id >= first; id--) ids.push(id);
+  const rows = await Promise.all(ids.map(async (id) => ({ id, j: await pub.readContract({ address: ESCROW, abi: escrowAbi, functionName: "jobs", args: [id] }) })));
+  const me = account.toLowerCase();
+  return rows.filter(({ j }) => j[0].toLowerCase() === me || j[1].toLowerCase() === me);
 }
 async function loadJobs() {
   const box = $("jobs");
   if (!account) { box.innerHTML = '<div class="empty">Connect to see your payments.</div>'; return; }
   try {
-    const ids = await fetchJobs();
-    if (!ids.length) { box.innerHTML = '<div class="empty">Nothing yet. Send a payment, or share your pay link to get your first job. 👋</div>'; return; }
+    const list = await fetchJobs();
+    if (!list.length) { box.innerHTML = '<div class="empty">Nothing yet. Send a payment, or share your pay link to get your first job. 👋</div>'; return; }
     const rows = [];
-    for (const id of ids) {
-      const [client, freelancer, amount, , , , , , status] = await pub.readContract({ address: ESCROW, abi: escrowAbi, functionName: "jobs", args: [id] });
+    for (const { id, j } of list) {
+      const [client, freelancer, amount, , , , , , status] = j;
       const isClient = client.toLowerCase() === account.toLowerCase();
       const other = await nameOf(isClient ? freelancer : client);
       const [ic, lab] = LABEL[status] || ["•", ""];

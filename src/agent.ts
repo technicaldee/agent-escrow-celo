@@ -23,7 +23,12 @@ async function main() {
     try {
       const head = await publicClient.getBlockNumber();
       if (head >= from) {
-        const logs = await publicClient.getContractEvents({ address: escrow, abi: escrowAbi, fromBlock: from, toBlock: head });
+        // Public RPCs cap eth_getLogs at 5,000 blocks, so catch up in windows.
+        const logs = [];
+        for (let start = from; start <= head; start += 4000n) {
+          const end = start + 3999n < head ? start + 3999n : head;
+          logs.push(...(await publicClient.getContractEvents({ address: escrow, abi: escrowAbi, fromBlock: start, toBlock: end })));
+        }
         for (const log of logs) {
           if (log.eventName === "SettlementRequested") {
             const { id, freelancer } = log.args as { id: bigint; freelancer: `0x${string}` };
