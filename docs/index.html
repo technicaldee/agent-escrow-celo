@@ -137,6 +137,7 @@ $("fund").onclick = () => run("Funding", async () => {
   if (!isAddress(freelancer)) throw new Error("Enter a valid freelancer wallet address");
   const amount = parseUnits($("amount").value || "0", 6);
   if (amount <= 0n) throw new Error("Enter an amount");
+  if ($("naira").checked && amount < 1_020_000n) throw new Error("Naira payouts need at least 1.02 USD₮ (Textile FX minimum swap is 1 USD₮ after the 1% fee). Raise the amount or untick naira.");
   const now = Math.floor(Date.now() / 1000);
   const deliverBy = now + Math.round(Number($("days").value) * 86400);
   const reviewWindow = Math.round(Number($("review").value) * 3600);
