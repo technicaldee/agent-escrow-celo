@@ -20,5 +20,15 @@
     "dotenv": "^18.0.10",
     "hono": "^4.13.23",
     "viem": "^2.58.8"
+  },
+  "scripts": {
+    "test": "hardhat test",
+    "compile": "hardhat compile",
+    "agent": "tsx src/agent.ts",
+    "quote": "tsx scripts/quote.ts",
+    "deploy": "hardhat run scripts/deploy.ts --network celo",
+    "register": "tsx scripts/register-8004.ts",
+    "export-abi": "tsx scripts/export-abi.ts",
+    "typecheck": "tsc --noEmit -p ."
   }
 }
