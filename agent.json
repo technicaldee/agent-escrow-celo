@@ -3,9 +3,24 @@
   "name": "Delivery Escrow Agent",
   "description": "Holds a client's USD₮ until freelance work is approved. Reviews delivery evidence, rules on disputes, and pays freelancers in USD₮ or in naira (cNGN via Textile FX). 1% fee, every decision recorded onchain.",
   "services": [
-    { "name": "web", "endpoint": "https://github.com/technicaldee/agent-escrow-celo" }
+    {
+      "name": "web",
+      "endpoint": "https://github.com/technicaldee/agent-escrow-celo"
+    },
+    {
+      "name": "escrow",
+      "endpoint": "eip155:42220:0x663b081f621eaf058ff3b7d8298f43c3b80d15ae"
+    }
   ],
   "x402Support": false,
   "active": true,
-  "supportedTrust": ["reputation"]
+  "supportedTrust": [
+    "reputation"
+  ],
+  "registrations": [
+    {
+      "agentId": 10162,
+      "agentRegistry": "eip155:42220:0x8004A169FB4a3325136EB29fA0ceB6D2e539a432"
+    }
+  ]
 }
